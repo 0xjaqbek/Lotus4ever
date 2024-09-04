@@ -737,31 +737,27 @@ const muteButton = document.querySelector('.mute-button');
 const startButton = document.querySelector('.start-button');
 const exitButton = document.querySelector('.exit-button');
 
-let goButtonPressed = false;
-
-goButton.addEventListener('touchstart', () => {
-  goButtonPressed = true;
+goButton.addEventListener('mousedown', () => {
   KEYS.ArrowUp = true;
 });
 
-goButton.addEventListener('touchend', () => {
-  goButtonPressed = false;
-  KEYS.ArrowUp = false;
+goButton.addEventListener('mouseup', () => {
+  KEYS.ArrowUp = true;
 });
 
-leftButton.addEventListener('touchstart', () => {
+leftButton.addEventListener('mousedown', () => {
   KEYS.ArrowLeft = true;
 });
 
-leftButton.addEventListener('touchend', () => {
+leftButton.addEventListener('mouseup', () => {
   KEYS.ArrowLeft = false;
 });
 
-rightButton.addEventListener('touchstart', () => {
+rightButton.addEventListener('mousedown', () => {
   KEYS.ArrowRight = true;
 });
 
-rightButton.addEventListener('touchend', () => {
+rightButton.addEventListener('mouseup', () => {
   KEYS.ArrowRight = false;
 });
 
@@ -807,14 +803,3 @@ startButton.addEventListener('click', () => {
 exitButton.addEventListener('click', () => {
   reset();
 });
-
-// Update the `update()` function to handle the GO button
-function update(step) {
-  // ...
-  if (goButtonPressed) {
-    KEYS.ArrowUp = true;
-  } else {
-    KEYS.ArrowUp = false;
-  }
-  // ...
-}
