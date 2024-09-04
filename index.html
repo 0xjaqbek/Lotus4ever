@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <title>Lotus4ever</title>
-    <link rel="icon" href="icon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icon.png" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P" />
+    <link rel="stylesheet" href="styles.css" />
     <script>
       window.console = window.console || function (t) {};
     </script>
@@ -39,15 +39,22 @@
       </div>
     </div>
 
-    <div id="controls">
-      <span><span>C</span>insert coin</span>
-      <span><span>M</span>mute</span>
-      <span><span>&lt;</span><span>&gt;</span>move</span>
-      <span><span>&lt;</span><span>&gt;</span>accelerate</span>
+    <div id="mobile_controls">
+      <div class="row">
+        <button class="left-button">&lt;</button>
+        <button class="go-button">GO</button>
+        <button class="right-button">&gt;</button>
+      </div>
+      <div class="row">
+        <button class="mute-button">MUTE</button>
+        <button class="start-button">START</button>
+        <button class="exit-button">EXIT</button>
+      </div>
     </div>
+
     <script src="javascript/1.js"></script>
 
-    <script id="rendered-js"  src="script.js"></script>
+    <script id="rendered-js" src="script.js"></script>
     <script src="javascript/null.js"></script>
   </body>
 </html>

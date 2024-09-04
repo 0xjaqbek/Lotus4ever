@@ -189,3 +189,57 @@ Guide
 #controls > span:last-child > span {
   transform: rotate(90deg);
 }
+
+#mobile_controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  #mobile_controls .row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  #mobile_controls button {
+
+    font-size: 24px;
+    font-family: "Press Start 2P", monospace;
+    background-color: #959298;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+  }
+  
+  #mobile_controls button:hover {
+    background-color: #77747a;
+  }
+  
+  #mobile_controls button:active {
+    background-color: #5d5b60;
+  }
+  
+  .go-button {
+    font-size: 24px;
+    padding: 30px 70px;
+  }
+  
+  .left-button,
+  .right-button {
+    font-size: 30px;
+    padding: 140px 180px;
+    margin: 0 10px;
+  }
+  
+  .mute-button,
+  .start-button,
+  .exit-button {
+    font-size: 16px;
+    padding: 30px 70px;
+    margin: 0 5px;
+  }
