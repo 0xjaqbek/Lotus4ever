@@ -737,27 +737,31 @@ const muteButton = document.querySelector('.mute-button');
 const startButton = document.querySelector('.start-button');
 const exitButton = document.querySelector('.exit-button');
 
-goButton.addEventListener('mousedown', () => {
+let goButtonPressed = false;
+
+goButton.addEventListener('touchstart', () => {
+  goButtonPressed = true;
   KEYS.ArrowUp = true;
 });
 
-goButton.addEventListener('mouseup', () => {
-  KEYS.ArrowUp = true;
+goButton.addEventListener('touchend', () => {
+  goButtonPressed = false;
+  KEYS.ArrowUp = false;
 });
 
-leftButton.addEventListener('mousedown', () => {
+leftButton.addEventListener('touchstart', () => {
   KEYS.ArrowLeft = true;
 });
 
-leftButton.addEventListener('mouseup', () => {
+leftButton.addEventListener('touchend', () => {
   KEYS.ArrowLeft = false;
 });
 
-rightButton.addEventListener('mousedown', () => {
+rightButton.addEventListener('touchstart', () => {
   KEYS.ArrowRight = true;
 });
 
-rightButton.addEventListener('mouseup', () => {
+rightButton.addEventListener('touchend', () => {
   KEYS.ArrowRight = false;
 });
 
