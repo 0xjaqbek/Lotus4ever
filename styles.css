@@ -12,6 +12,15 @@ body {
   height: 98vh;
 }
 
+#all {
+    position: relative;
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures proper layout of child elements */
+}
+
 /* UI */
 .topUI {
   position: absolute;
