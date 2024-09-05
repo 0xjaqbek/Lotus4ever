@@ -18,7 +18,6 @@ body {
     height: 100vh; /* Full viewport height */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Ensures proper layout of child elements */
 }
 
 /* UI */
