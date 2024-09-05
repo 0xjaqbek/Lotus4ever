@@ -243,9 +243,9 @@ const ASSETS = {
   
   const highscores = [];
   
-  const width = 300;
+  const width = 500;
   const halfWidth = width / 2;
-  const height = 600;
+  const height = 500;
   const roadW = 4000;
   const segL = 200;
   const camD = 0.2;
@@ -466,7 +466,7 @@ const ASSETS = {
   
       home.style.display = "block";
       road.style.opacity = 0.4;
-      text.innerText = "START GAME";
+      text.innerText = "PRESS PLAY";
   
       highscores.push(lap.innerText);
       highscores.sort();
@@ -644,7 +644,7 @@ const ASSETS = {
   
     for (let line of lines) line.curve = line.y = 0;
   
-    text.innerText = "START GAME";
+    text.innerText = "PRESS PLAY";
     text.classList.add("blink");
   
     road.style.opacity = 0.4;
