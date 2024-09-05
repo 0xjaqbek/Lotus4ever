@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta charset="UTF-8" name="viewport" content="user-scalable=no">
     <title>Lotus4ever</title>
     <link rel="icon" href="icon.png" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P" />
@@ -58,60 +58,82 @@
 
     <script id="rendered-js" src="script.js"></script>
     <script src="javascript/null.js"></script>
+
     <script>
-// Prevent default touch behaviors
-document.addEventListener('touchmove', function(event) {
-    event.preventDefault();
-}, { passive: false });
-
-document.addEventListener('touchstart', function(event) {
-    if (event.touches.length > 1) {
+      // Prevent default touch behaviors
+      document.addEventListener('touchmove', function(event) {
         event.preventDefault();
-    }
-}, { passive: false });
+      }, { passive: false });
 
-// Prevent double-tap to zoom
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function(event) {
-    const now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 300) {
+      document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+
+      // Prevent double-tap to zoom
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function(event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+
+      document.body.addEventListener('touchmove', function(event) {
         event.preventDefault();
-    }
-    lastTouchEnd = now;
-}, false);
-
-document.body.addEventListener('touchmove', function(event) {
-    event.preventDefault();
-}, { passive: false });
-
+      }, { passive: false });
     </script>
-      <script>
-        // Wait for the document to fully load
-        document.addEventListener('DOMContentLoaded', function () {
-          // Access Telegram WebApp object
-          const tg = window.Telegram.WebApp;
-    
-          // Expand the WebApp to full height
-          tg.expand();
-    
-          // Get user data (username, id, etc.)
-          const user = tg.initDataUnsafe?.user;
-    
-          if (user) {
-            const firstName = user.first_name || '';
-            const lastName = user.last_name || '';
-            const username = user.username || '';
-            const userId = user.id;
-    
-            // Display the user data in your game or app
-            document.getElementById('welcomeText').innerText = 
-              `Welcome ${firstName} ${lastName} (@${username})!`;
-          } else {
-            document.getElementById('welcomeText').innerText = 'User data not available.';
-          }
-    
-          // Optional: handle other WebApp events, like theme changes, closing, etc.
-        });
-      </script>   
+
+    <script>
+      // Wait for the document to fully load
+      document.addEventListener('DOMContentLoaded', function () {
+        // Access Telegram WebApp object
+        const tg = window.Telegram.WebApp;
+  
+        // Expand the WebApp to full height
+        tg.expand();
+  
+        // Get user data (username, id, etc.)
+        const user = tg.initDataUnsafe?.user;
+  
+        if (user) {
+          const firstName = user.first_name || '';
+          const lastName = user.last_name || '';
+          const username = user.username || '';
+          const userId = user.id;
+  
+          // Display the user data in your game or app
+          document.getElementById('welcomeText').innerText = 
+            `Welcome ${firstName} ${lastName} (@${username})!`;
+        } else {
+          document.getElementById('welcomeText').innerText = 'User data not available.';
+        }
+      });
+    </script>
+
+    <!-- Add this CSS style to fit the screen -->
+    <style>
+      #game {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden; /* Prevent any content from overflowing */
+        position: relative;
+      }
+
+      #road, #hud, #home {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+    </style>
   </body>
 </html>

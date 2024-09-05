@@ -82,9 +82,12 @@ body {
 road
 */
 #game {
+    width: 100vw; /* Fit the width to the device's viewport */
+    height: 100vh; /* Fit the height to the device's viewport */
+    overflow: hidden; /* Prevent any overflow */
   position: relative;
   margin: 0 auto;
-  overflow: hidden;
+
   background: #222;
   user-select: none;
   transition: opacity 10s;
