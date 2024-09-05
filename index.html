@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="viewport" content=" initial-scale=0.50, maximum-scale=0.50, minimum-scale=0.50, user-scalable=no">
+    <meta name="viewport" content="user-scalable=no">
     <title>Lotus4ever</title>
     <link rel="icon" href="icon.png" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P" />
@@ -60,6 +60,8 @@
     <script src="javascript/null.js"></script>
 
     <script>
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+      console.log('Viewport width:', viewportWidth);
       // Prevent default touch behaviors
       document.addEventListener('touchmove', function(event) {
         event.preventDefault();
@@ -89,16 +91,21 @@
     <script>
       // Wait for the document to fully load
       document.addEventListener('DOMContentLoaded', function () {
-        // Access Telegram WebApp object
-        const tg = window.Telegram.WebApp;
-          // Expand the WebApp to full height
-          tg.expand();
-          tg.initViewport;
-          requestViewport().then((data) => {
-    // Output:
-    // { height: 122, isExpanded: false, width: 375, isStateStable: true }
-    console.log(data);
-});
+    // Access Telegram WebApp object
+    const tg = window.Telegram.WebApp;
+
+    // Expand the WebApp to full height
+    tg.expand();
+
+    // Get the current viewport information
+    const viewportInfo = tg.viewportStableHeight;
+    console.log('Viewport stable height:', viewportInfo);
+
+    // Set up an event listener for viewport changes
+    tg.onEvent('viewportChanged', function() {
+        console.log('New viewport height:', tg.viewportHeight);
+        console.log('Is expanded:', tg.isExpanded);
+    });
 
   
 
