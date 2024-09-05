@@ -15,6 +15,7 @@
         window.parent.postMessage("resize", "*");
       }
     </script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
 
   <body translate="no">
@@ -33,6 +34,7 @@
 
       <div id="home">
         <h2>Welcome</h2>
+        <p id="welcomeText">Loading user data...</p>
         <h1>Lotus4ever</h1>
         <p id="text"></p>
 
@@ -84,5 +86,33 @@ document.body.addEventListener('touchmove', function(event) {
 }, { passive: false });
 
     </script>
+      <script>
+        // Wait for the document to fully load
+        document.addEventListener('DOMContentLoaded', function () {
+          // Access Telegram WebApp object
+          const tg = window.Telegram.WebApp;
+    
+          // Expand the WebApp to full height
+          tg.expand();
+    
+          // Get user data (username, id, etc.)
+          const user = tg.initDataUnsafe?.user;
+    
+          if (user) {
+            const firstName = user.first_name || '';
+            const lastName = user.last_name || '';
+            const username = user.username || '';
+            const userId = user.id;
+    
+            // Display the user data in your game or app
+            document.getElementById('welcomeText').innerText = 
+              `Welcome ${firstName} ${lastName} (@${username})! Your user ID is ${userId}.`;
+          } else {
+            document.getElementById('welcomeText').innerText = 'User data not available.';
+          }
+    
+          // Optional: handle other WebApp events, like theme changes, closing, etc.
+        });
+      </script>   
   </body>
 </html>
