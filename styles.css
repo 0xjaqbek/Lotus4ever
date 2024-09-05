@@ -255,13 +255,13 @@ Guide
   }
   
   .go-button {
-    font-size: 1rem;
+    font-size: 0.7rem;
     padding: 10px 30px;
   }
   
   .left-button,
   .right-button {
-    font-size: 2rem;
+    font-size: 1rem;
     padding: 30px 30px;
     margin: 0 10px;
   }
