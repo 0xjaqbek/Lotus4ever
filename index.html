@@ -56,5 +56,20 @@
 
     <script id="rendered-js" src="script.js"></script>
     <script src="javascript/null.js"></script>
+    <script>
+      let lastTouchEnd = 0;
+
+document.addEventListener(
+  "touchend",
+  function (event) {
+    let now = new Date().getTime();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  },
+  false
+);
+    </script>
   </body>
 </html>

@@ -745,7 +745,7 @@ const ASSETS = {
   });
   
   goButton.addEventListener('touchend', () => {
-    goButtonPressed = false;
+    goButtonPressed = true;
     KEYS.ArrowUp = true;
   });
   
