@@ -28,7 +28,7 @@ body {
   text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
   letter-spacing: 2px;
   color: #fff;
-  font-size: 17px;
+  font-size: 12px;
 }
 .topUI::before {
   display: inline-block;
