@@ -9,7 +9,7 @@ body {
   background: #222;
   font-family: "Press Start 2P", monospace;
   font-smooth: never;
-  height: 98vh;
+  height: 98%;
 }
 
 /* UI */
@@ -82,8 +82,8 @@ body {
 road
 */
 #game {
-    width: 100vw; /* Fit the width to the device's viewport */
-    height: 100vh; /* Fit the height to the device's viewport */
+    width: 100%; /* Fit the width to the device's viewport */
+    height: 100%; /* Fit the height to the device's viewport */
     overflow: hidden; /* Prevent any overflow */
   position: relative;
   margin: 0 auto;
