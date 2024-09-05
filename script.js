@@ -244,9 +244,9 @@ const ASSETS = {
   
   const highscores = [];
   
-  const width = 480;
+  const width = 360;
   const halfWidth = width / 2;
-  const height = 640;
+  const height = 580;
   const roadW = 4000;
   const segL = 200;
   const camD = 0.2;
