@@ -19,6 +19,7 @@
   </head>
 
   <body translate="no">
+  <div>  
     <div id="game">
       <div id="road">
         <div id="cloud"></div>
@@ -53,15 +54,16 @@
         <button class="exit-button">EXIT</button>
       </div>
     </div>
+  </div>
 
-    <script src="javascript/1.js"></script>
+  <script src="javascript/1.js"></script>
+  <script id="rendered-js" src="script.js"></script>
+  <script src="javascript/null.js"></script>
 
-    <script id="rendered-js" src="script.js"></script>
-    <script src="javascript/null.js"></script>
-
-    <script>
+  <script>
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
       console.log('Viewport width:', viewportWidth);
+      console.log('Viewport height:', viewportHeight);
       // Prevent default touch behaviors
       document.addEventListener('touchmove', function(event) {
         event.preventDefault();
