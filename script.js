@@ -431,7 +431,7 @@ const ASSETS = {
   
     // speed
   
-    if (inGame && KEYS.ArrowUp) speed = accelerate(speed, accel, step);
+    if (inGame && !KEYS.ArrowUp) speed = accelerate(speed, accel, step);
     else if (KEYS.ArrowDown) speed = accelerate(speed, breaking, step);
     else speed = accelerate(speed, decel, step);
   
@@ -739,14 +739,16 @@ const ASSETS = {
   
   let goButtonPressed = false;
   
-  goButton.addEventListener('touchstart', () => {
-    goButtonPressed = true;
-    KEYS.ArrowUp = true;
+  // When the button is pressed, simulate stopping acceleration (as if releasing the up arrow key)
+  goButton.addEventListener('touchstart', (e) => {
+      KEYS.ArrowUp = true;  // Stop accelerating
+      e.preventDefault();
   });
   
-  goButton.addEventListener('touchend', () => {
-    goButtonPressed = true;
-    KEYS.ArrowUp = true;
+  // When the button is released, simulate pressing the up arrow key again to resume acceleration
+  goButton.addEventListener('touchend', (e) => {
+      KEYS.ArrowUp = false;  // Start accelerating again
+      e.preventDefault();
   });
   
   leftButton.addEventListener('touchstart', () => {
