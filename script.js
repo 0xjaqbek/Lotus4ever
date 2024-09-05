@@ -1,10 +1,4 @@
-const [viewport] = initViewport();
 
-const vp = await viewport;
-
-if (!vp.isExpanded) {
-    vp.expand(); // will expand the Mini App, if it's not
-}
 
 // ------------------------------------------------------------
 // assets
