@@ -260,9 +260,9 @@ Guide
   
   .left-button,
   .right-button {
-    font-size: 2rem;
-    padding: 10px 30px;
-    margin: 0 10px;
+    font-size: 1.8rem;
+    padding: 10px 25px;
+    margin: 0 5px;
   }
   
   .mute-button,
