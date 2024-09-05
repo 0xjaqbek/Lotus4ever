@@ -9,7 +9,7 @@ body {
   background: #222;
   font-family: "Press Start 2P", monospace;
   font-smooth: never;
-  height: 98%;
+  height: 98vh;
 }
 
 /* UI */
@@ -82,8 +82,8 @@ body {
 road
 */
 #game {
-    width: 100%; /* Fit the width to the device's viewport */
-    height: 100%; /* Fit the height to the device's viewport */
+    width: 100vw; /* Fit the width to the device's viewport */
+    height: 100vh; /* Fit the height to the device's viewport */
     overflow: hidden; /* Prevent any overflow */
   position: relative;
   margin: 0 auto;
@@ -149,7 +149,7 @@ h1 {
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
-  font-size: 5em;
+  font-size: 2em;
 
   background: -webkit-linear-gradient(#25d8b1, #e2bbf0);
   -webkit-background-clip: text;
@@ -161,7 +161,7 @@ h2 {
     left: 50%;
     top: 15%;
     transform: translate(-50%, -50%);
-    font-size: 3em;
+    font-size: 1em;
   
     background: -webkit-linear-gradient(#25d8b1, #e2bbf0);
     -webkit-background-clip: text;
@@ -248,13 +248,13 @@ Guide
   
   .go-button {
     font-size: 24px;
-    padding: 30px 70px;
+    padding: 20px 30px;
   }
   
   .left-button,
   .right-button {
     font-size: 30px;
-    padding: 140px 180px;
+    padding: 60px 89px;
     margin: 0 10px;
   }
   
@@ -262,6 +262,13 @@ Guide
   .start-button,
   .exit-button {
     font-size: 16px;
-    padding: 30px 70px;
-    margin: 0 5px;
+    padding: 20px 36px;
+    margin: 0 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    #game, #road, #cloud, #hero, #hud, #home, #mobile_controls {
+      width: 100%;
+      max-width: 100vw;
+    }
   }
