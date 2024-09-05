@@ -746,7 +746,7 @@ const ASSETS = {
   
   goButton.addEventListener('touchend', () => {
     goButtonPressed = false;
-    KEYS.ArrowUp = false;
+    KEYS.ArrowUp = true;
   });
   
   leftButton.addEventListener('touchstart', () => {
