@@ -749,21 +749,21 @@ goButton.addEventListener('touchend', () => {
   KEYS.ArrowUp = false;
 });
 
-leftButton.addEventListener('touchstart', () => {
-  KEYS.ArrowLeft = true;
-});
+left_button.addEventListener('touchstart', () => {
+    KEYS.ArrowLeft = true;
+  });
 
-leftButton.addEventListener('touchend', () => {
-  KEYS.ArrowLeft = false;
-});
+left_button.addEventListener('touchend', () => {
+    KEYS.ArrowLeft = false;
+  });
 
-rightButton.addEventListener('touchstart', () => {
-  KEYS.ArrowRight = true;
-});
+right_button.addEventListener('touchstart', () => {
+    KEYS.ArrowRight = true;
+  });
 
-rightButton.addEventListener('touchend', () => {
-  KEYS.ArrowRight = false;
-});
+right_button.addEventListener('touchend', () => {
+    KEYS.ArrowRight = false;
+  });
 
 muteButton.addEventListener('click', () => {
   if (KEYS.KeyM) {
