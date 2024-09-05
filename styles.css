@@ -261,16 +261,16 @@ Guide
   
   .left-button,
   .right-button {
-    font-size: 1rem;
-    padding: 30px 30px;
+    font-size: 0.7rem;
+    padding: 10px 30px;
     margin: 0 10px;
   }
   
   .mute-button,
   .start-button,
   .exit-button {
-    font-size: 1rem;
-    padding: 10px 23px;
+    font-size: 0.6rem;
+    padding: 10px 13px;
     margin: 0 10px;
   }
 
