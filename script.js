@@ -741,13 +741,13 @@ const ASSETS = {
   
   // When the button is pressed, simulate stopping acceleration (as if releasing the up arrow key)
   goButton.addEventListener('touchstart', (e) => {
-      KEYS.ArrowUp = false;  // Stop accelerating
+      KEYS.ArrowUp = true;  // Stop accelerating
       e.preventDefault();
   });
   
   // When the button is released, simulate pressing the up arrow key again to resume acceleration
   goButton.addEventListener('touchend', (e) => {
-      KEYS.ArrowUp = true;  // Start accelerating again
+      KEYS.ArrowUp = false;  // Start accelerating again
       e.preventDefault();
   });
   
