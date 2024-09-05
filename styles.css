@@ -144,7 +144,7 @@ home
 h1 {
   position: absolute;
   left: 50%;
-  top: 25%;
+  top: 35%;
   transform: translate(-50%, -50%);
   font-size: 5em;
 
@@ -152,6 +152,19 @@ h1 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+h2 {
+    position: absolute;
+    left: 50%;
+    top: 15%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+  
+    background: -webkit-linear-gradient(#25d8b1, #e2bbf0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
 
 #text {
   position: absolute;
