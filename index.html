@@ -10,11 +10,6 @@
       window.console = window.console || function (t) {};
     </script>
 
-    <script>
-      if (document.location.search.match(/type=embed/gi)) {
-        window.parent.postMessage("resize", "*");
-      }
-    </script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
 
@@ -91,13 +86,29 @@
     </script>
 
     <script>
-      // Wait for the document to fully load
-      document.addEventListener('DOMContentLoaded', function () {
-    // Access Telegram WebApp object
+document.addEventListener('DOMContentLoaded', function() {
     const tg = window.Telegram.WebApp;
 
-    // Expand the WebApp to full height
+    // Ensure the app is ready
+    tg.ready();
+
+    // Expand to full height
     tg.expand();
+
+    // Listen for viewport changes
+    tg.onEvent('viewportChanged', function() {
+        adjustLayout(tg.viewportHeight);
+    });
+
+    function adjustLayout(height) {
+        // Adjust your app's layout based on the new height
+        document.getElementById('app-container').style.height = `${height}px`;
+    }
+
+    // Use Telegram's theme if available
+    if (tg.colorScheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
 
     // Get the current viewport information
     const viewportInfo = tg.viewportStableHeight;
@@ -107,11 +118,7 @@
     tg.onEvent('viewportChanged', function() {
         console.log('New viewport height:', tg.viewportHeight);
         console.log('Is expanded:', tg.isExpanded);
-    });
-
-  
-
-  
+    }); 
         // Get user data (username, id, etc.)
         const user = tg.initDataUnsafe?.user;
   
