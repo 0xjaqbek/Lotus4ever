@@ -14,7 +14,7 @@ body {
 }
 
 #all {
-    position: absolute ; 
+    
     width: 100vw; /* Full viewport width */
     height: 100vh; /* Full viewport height */
     display: flex;
