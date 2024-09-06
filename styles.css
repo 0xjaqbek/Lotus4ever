@@ -176,13 +176,17 @@ h2 {
 p {
     font-size: 0.5rem;
 }
-  
+
+#welcomeText{
+    top: 25%;
+    transform: translate(-50%, -60%);
+}
 
 #text {
   position:absolute;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: 60%;
+  transform: translate(-50%, -60%);
   font-size: 1em;
   color: #d9bbf3;
   text-shadow: 0 0 black, 0 2px black, 2px 0 black, 0 0 black;
