@@ -230,14 +230,14 @@ Guide
   
   .go-button {
     font-size: 0.7rem;
-    padding: 10px 30px;
+    padding: 10px 20px;
   }
   
   .left-button,
   .right-button {
     font-size: 1.8rem;
-    padding: 10px 25px;
-    margin: 0 5px;
+    padding: 20px 30px;
+    margin: 0 1px;
   }
   
   .mute-button,
