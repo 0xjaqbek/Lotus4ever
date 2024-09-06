@@ -91,7 +91,7 @@ road
   position:relative;
 
   left: 50%;
-  transform: translate(-50%, 0%);
+  transform: translate(-50%, 5%);
   background: #222;
   user-select: none;
   transition: opacity 10s;
@@ -203,7 +203,8 @@ Guide
     position: absolute;
     flex: auto;
     flex-direction: column;
-  }
+    margin-top: 10px;
+}
 
 #mobile_controls {
     position: relative;
