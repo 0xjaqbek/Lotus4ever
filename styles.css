@@ -177,7 +177,7 @@ h2 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.2em;
+  font-size: 1em;
   color: #d9bbf3;
   text-shadow: 0 0 black, 0 2px black, 2px 0 black, 0 0 black;
 }
@@ -195,9 +195,17 @@ h2 {
 Guide
 */
 
+#all {
+    width: 100vw; /* Take up the full width of the viewport */
+    height: 100vh; /* Take up the full height of the viewport */
+    overflow: hidden; /* Prevent overflow */
+    position: absolute;
+    flex: auto;
+    flex-direction: column;
+  }
 
 #mobile_controls {
-    position: fixed;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;

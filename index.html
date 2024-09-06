@@ -12,7 +12,7 @@
   </head>
 
   <body translate="no">
-  
+  <div id="all"></div>
     <div id="game">
       <div id="road">
         <div id="cloud"></div>
@@ -47,16 +47,26 @@
         <button class="exit-button">EXIT</button>
       </div>
     </div>
-
+  </div>
 
   <script src="javascript/1.js"></script>
   <script id="rendered-js" src="script.js"></script>
   <script src="javascript/null.js"></script>
 
+
+    <!-- Add JavaScript for dynamic resizing -->
+    <script>
+      function resizeAllDiv() {
+        const allDiv = document.getElementById('all');
+        allDiv.style.width = `${window.innerWidth}px`;  // Full screen width
+        allDiv.style.height = `${window.innerHeight}px`;  // Full screen height
+      }
+
+      // Resize on load and window resize
+      window.addEventListener('resize', resizeAllDiv);
+      window.addEventListener('DOMContentLoaded', resizeAllDiv);
+    </script>
   <script>
-    window.addEventListener('resize', function() {
-    document.body.style.height = window.innerHeight + 'px';
-});
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
       console.log('Viewport width:', viewportWidth);
