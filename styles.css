@@ -40,7 +40,7 @@ body {
   border: 2px solid #7dd8c9;
 }
 #time {
-  left: 13%;
+  left: 10%;
   color: #f4f430;
 }
 #time::before {
@@ -48,14 +48,14 @@ body {
   color: #f57214;
 }
 #score {
-  left: 55%;
+  left: 35%;
 }
 #score::before {
   content: "SCORE";
   color: #a61a9d;
 }
 #lap {
-  left: 82%;
+  left: 77%;
   width: 45%;
 }
 #lap::before {
@@ -66,18 +66,18 @@ body {
 #tacho {
   position: absolute;
   text-align: right;
-  width: 23%;
+  width: 33%;
   bottom: 5%;
   z-index: 2000;
   color: #e62e13;
   text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
   letter-spacing: 2px;
-  font-size: 14px;
+  font-size: 12px;
 }
 #tacho::after {
   content: "km/h";
   color: #fab453;
-  font-size: 12px;
+  font-size: 8px;
   margin-left: 5px;
 }
 
