@@ -1,5 +1,15 @@
 let username = '';
 let userId = '';
+let db; // Declare `db` at a higher scope
+
+window.onload = function() {
+  // Initialize Firebase inside an event that ensures the page has loaded
+  const firebaseConfig = { /* your Firebase config */ };
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database(); // Initialize the `db` here
+
+  console.log(db);
+};
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -882,16 +892,6 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
 };
 
-let db; // Declare `db` at a higher scope
-
-window.onload = function() {
-  // Initialize Firebase inside an event that ensures the page has loaded
-  const firebaseConfig = { /* your Firebase config */ };
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.database(); // Initialize the `db` here
-
-  console.log(db);
-};
 
 // Submit time function - improved to handle numeric time comparison
 function submitTime(userId, username, newTime) {
