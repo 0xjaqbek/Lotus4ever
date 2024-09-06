@@ -1,3 +1,6 @@
+import firebase from "firebase/app";
+import "firebase/database"; // If you're using the Firebase database
+
 let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
