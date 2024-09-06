@@ -1,4 +1,56 @@
 
+document.addEventListener('DOMContentLoaded', function() {
+    const tg = window.Telegram.WebApp;
+
+    // Ensure the app is ready
+    tg.ready();
+
+    // Expand to full height
+    tg.expand();
+
+    // Listen for viewport changes
+    tg.onEvent('viewportChanged', function() {
+        adjustLayout(tg.viewportHeight);
+    });
+
+    function adjustLayout(height) {
+        // Adjust your app's layout based on the new height
+        document.getElementById('app-container').style.height = `${height}px`;
+    }
+
+    // Use Telegram's theme if available
+    if (tg.colorScheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+
+    // Get the current viewport information
+    const viewportInfo = tg.viewportStableHeight;
+    console.log('Viewport stable height:', viewportInfo);
+
+    // Set up an event listener for viewport changes
+    tg.onEvent('viewportChanged', function() {
+        console.log('New viewport height:', tg.viewportHeight);
+        console.log('Is expanded:', tg.isExpanded);
+    }); 
+        // Get user data (username, id, etc.)
+        const user = tg.initDataUnsafe?.user;
+  
+        if (user) {
+          const firstName = user.first_name || '';
+          const lastName = user.last_name || '';
+          const username = user.username || '';
+          const userId = user.id;
+  
+          // Display the user data in your game or app
+          document.getElementById('welcomeText').innerText = 
+            `Welcome ${firstName} ${lastName} (@${username})!`;
+            console.log(`User: ${username}`);
+        } else {
+          document.getElementById('welcomeText').innerText = 'User data not available.';
+          console.log(`User: UNAVAILABLE`);
+        }
+      });
+
 
 // ------------------------------------------------------------
 // assets
@@ -458,11 +510,6 @@ const ASSETS = {
     }
   
     // win / lose + UI
-    const username = window.username || 'Unknown User';  // Access username from index.html
-    // Wait until the DOM is fully loaded and Telegram WebApp is initialized
-    document.addEventListener('DOMContentLoaded', function() {
-    const username = window.username || 'Unknown User';  // Access username from index.html
-    });
     if (!inGame) {
       speed = accelerate(speed, breaking, step);
       speed = speed.clamp(0, maxSpeed);
