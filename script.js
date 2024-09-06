@@ -1,53 +1,56 @@
-
 document.addEventListener('DOMContentLoaded', function() {
-    const tg = window.Telegram.WebApp;
+  const tg = window.Telegram.WebApp;
 
-    // Ensure the app is ready
-    tg.ready();
+  // Declare username variable here for wider scope
+  let username = 'UNAVAILABLE';
 
-    // Expand to full height
-    tg.expand();
+  // Ensure the app is ready
+  tg.ready();
 
-    // Listen for viewport changes
-    tg.onEvent('viewportChanged', function() {
-        adjustLayout(tg.viewportHeight);
-    });
+  // Expand to full height
+  tg.expand();
 
-    function adjustLayout(height) {
-        // Adjust your app's layout based on the new height
-        document.getElementById('app-container').style.height = `${height}px`;
-    }
+  // Listen for viewport changes
+  tg.onEvent('viewportChanged', function() {
+      adjustLayout(tg.viewportHeight);
+  });
 
-    // Use Telegram's theme if available
-    if (tg.colorScheme === 'dark') {
-        document.body.classList.add('dark-theme');
-    }
+  function adjustLayout(height) {
+      // Adjust your app's layout based on the new height
+      document.getElementById('app-container').style.height = `${height}px`;
+  }
 
-    // Get the current viewport information
-    const viewportInfo = tg.viewportStableHeight;
-    console.log('Viewport stable height:', viewportInfo);
+  // Use Telegram's theme if available
+  if (tg.colorScheme === 'dark') {
+      document.body.classList.add('dark-theme');
+  }
 
-    // Set up an event listener for viewport changes
-    tg.onEvent('viewportChanged', function() {
-        console.log('New viewport height:', tg.viewportHeight);
-        console.log('Is expanded:', tg.isExpanded);
-    }); 
-        // Get user data (username, id, etc.)
-        const user = tg.initDataUnsafe?.user;
-  
-        if (user) {
-          const firstName = user.first_name || '';
-          const lastName = user.last_name || '';
-          const username = user.username || '';
-          const userId = user.id;
-  
-          // Display the user data in your game or app
-          document.getElementById('welcomeText').innerText = 
-            `Welcome ${firstName} ${lastName} (@${username})!`;
-            console.log(`User: ${username}`);
-        } else {
-          document.getElementById('welcomeText').innerText = 'User data not available.';
-          console.log(`User: UNAVAILABLE`);
+  // Get the current viewport information
+  const viewportInfo = tg.viewportStableHeight;
+  console.log('Viewport stable height:', viewportInfo);
+
+  // Set up an event listener for viewport changes
+  tg.onEvent('viewportChanged', function() {
+      console.log('New viewport height:', tg.viewportHeight);
+      console.log('Is expanded:', tg.isExpanded);
+  });
+
+  // Get user data (username, id, etc.)
+  const user = tg.initDataUnsafe?.user;
+
+  if (user) {
+      const firstName = user.first_name || '';
+      const lastName = user.last_name || '';
+      username = user.username || ''; // Now `username` is assigned here
+      const userId = user.id;
+
+      // Display the user data in your game or app
+      document.getElementById('welcomeText').innerText = 
+          `Welcome ${firstName} ${lastName} (@${username})!`;
+      console.log(`User: ${username}`);
+  } else {
+      document.getElementById('welcomeText').innerText = 'User data not available.';
+      console.log(`User: UNAVAILABLE`);
         }
       });
 
