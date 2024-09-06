@@ -91,7 +91,7 @@ road
   position:relative;
 
   left: 50%;
-  transform: translate(-50%, 5%);
+  transform: translate(-50%, 1%);
   background: #222;
   user-select: none;
   transition: opacity 10s;
@@ -213,18 +213,20 @@ Guide
     align-items: center;
     justify-content: center;
     margin-top: 10px;
+    left: 50%;
+    transform: translate(-50%, -20%);
   }
   
   #mobile_controls .row {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   
   #mobile_controls button {
 
     font-family: "Press Start 2P", monospace;
-    background-color: #959298;
+    background-color: #9592989d;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -237,7 +239,7 @@ Guide
   }
   
   #mobile_controls button:active {
-    background-color: #5d5b60;
+    background-color: #5d5b60a6;
   }
   
   .go-button {
