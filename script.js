@@ -1,4 +1,5 @@
 let username = '';
+let userId = '';
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const firstName = user.first_name || '';
       const lastName = user.last_name || '';
       username = user.username || '';  // Assign to the higher scope variable
-      const userId = user.id;
+      userId = user.id || '';
 
       // Display the user data in your game or app
       document.getElementById('welcomeText').innerText = 
@@ -526,7 +527,7 @@ const ASSETS = {
       highscores.push(lap.innerText);
       highscores.sort();
       updateHighscore();
-      console.log(`User: ${username} Lap time: ${lap.innerText}`);
+      console.log(`User:${userId} ${username} Lap time: ${lap.innerText}`);
   
       inGame = false;
     } else {
