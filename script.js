@@ -1,5 +1,4 @@
-  // Declare username variable here for wider scope
-  let username = 'UNAVAILABLE';
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -41,13 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
   if (user) {
       const firstName = user.first_name || '';
       const lastName = user.last_name || '';
-      username = user.username || ''; // Now `username` is assigned here
+      const username = user.username || ''; // Now `username` is assigned here
       const userId = user.id;
 
       // Display the user data in your game or app
       document.getElementById('welcomeText').innerText = 
           `Welcome ${firstName} ${lastName} (@${username})!`;
-      console.log(`User: ${username}`);
+      console.log(`User:${userId} ${username}`);
   } else {
       document.getElementById('welcomeText').innerText = 'User data not available.';
       console.log(`User: UNAVAILABLE`);
