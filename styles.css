@@ -195,12 +195,12 @@ Guide
 
 
 #mobile_controls {
-
+    position: fixed;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 10px;
   }
   
   #mobile_controls .row {
