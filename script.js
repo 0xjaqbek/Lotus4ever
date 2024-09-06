@@ -1,4 +1,4 @@
-
+let username = '';
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (user) {
       const firstName = user.first_name || '';
       const lastName = user.last_name || '';
-      const username = user.username || ''; // Now `username` is assigned here
+      username = user.username || '';  // Assign to the higher scope variable
       const userId = user.id;
 
       // Display the user data in your game or app
@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
           `Welcome ${firstName} ${lastName} (@${username})!`;
       console.log(`User:${userId} ${username}`);
   } else {
+
       document.getElementById('welcomeText').innerText = 'User data not available.';
       console.log(`User: UNAVAILABLE`);
         }
