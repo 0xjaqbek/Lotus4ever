@@ -6,25 +6,18 @@ body {
     -ms-user-select: none;
     user-select: none;
     overflow: hidden;
-  background: #222;
+  background: #001a36;
   font-family: "Press Start 2P", monospace;
   font-smooth: never;
   height: 100vh;
   width: 100vw;
 }
 
-#all {
-    height: 100vh; /* Full viewport height */
-    display: flex;
-    flex-direction: column;
-
-}
-
 /* UI */
 .topUI {
   position: absolute;
   z-index: 1000; /* need this cause clip-path changes stack context */
-  transform: translate(-50%, 25px);
+  transform: translate(-55%, 25px);
   text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
   letter-spacing: 2px;
   color: #fff;
@@ -34,14 +27,14 @@ body {
   display: inline-block;
   height: 17px;
   padding: 1px 2px;
-  line-height: 19px;
-  font-size: 17px;
+  line-height: 14px;
+  font-size: 9px;
   background: #fff;
   text-shadow: none;
-  font-weight: 900;
+  font-weight: 500;
   letter-spacing: 0;
   border-radius: 6px;
-  margin-right: 30px;
+
   border: 2px solid #7dd8c9;
 }
 #time {
@@ -53,14 +46,14 @@ body {
   color: #f57214;
 }
 #score {
-  left: 45%;
+  left: 55%;
 }
 #score::before {
   content: "SCORE";
   color: #a61a9d;
 }
 #lap {
-  left: 88%;
+  left: 82%;
   width: 45%;
 }
 #lap::before {
@@ -77,12 +70,12 @@ body {
   color: #e62e13;
   text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
   letter-spacing: 2px;
-  font-size: 23px;
+  font-size: 14px;
 }
 #tacho::after {
   content: "km/h";
   color: #fab453;
-  font-size: 18px;
+  font-size: 12px;
   margin-left: 5px;
 }
 
@@ -94,7 +87,7 @@ road
     height: 100vh; /* Fit the height to the device's viewport */
     overflow: hidden; /* Prevent any overflow */
   position:relative;
-  margin: 0 auto;
+
 
   background: #222;
   user-select: none;
