@@ -144,8 +144,10 @@ document.addEventListener('DOMContentLoaded', function() {
           // Display the user data in your game or app
           document.getElementById('welcomeText').innerText = 
             `Welcome ${firstName} ${lastName} (@${username})!`;
+            console.log(`User: ${username}`);
         } else {
           document.getElementById('welcomeText').innerText = 'User data not available.';
+          console.log(`User: UNAVAILABLE`);
         }
       });
     </script>
