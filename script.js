@@ -458,7 +458,11 @@ const ASSETS = {
     }
   
     // win / lose + UI
-  
+    const username = window.username || 'Unknown User';  // Access username from index.html
+    // Wait until the DOM is fully loaded and Telegram WebApp is initialized
+    document.addEventListener('DOMContentLoaded', function() {
+    const username = window.username || 'Unknown User';  // Access username from index.html
+    });
     if (!inGame) {
       speed = accelerate(speed, breaking, step);
       speed = speed.clamp(0, maxSpeed);
@@ -472,6 +476,7 @@ const ASSETS = {
       highscores.push(lap.innerText);
       highscores.sort();
       updateHighscore();
+      console.log(`User: ${username} Lap time: ${lap.innerText}`);
   
       inGame = false;
     } else {
@@ -810,3 +815,24 @@ const ASSETS = {
   exitButton.addEventListener('click', () => {
     reset();
   });
+
+// Store user data and race time
+function storeRaceData(userId, username, raceTime) {
+    raceDetails = {
+      userId: userId,
+      username: username,
+      raceTime: raceTime
+    };
+    console.log(`Race finished! User: ${username} (ID: ${userId}), Time: ${raceTime}`);
+  }
+  
+  // Function to be called when the race finishes
+  function onRaceFinish() {
+    if (raceDetails.userId && raceDetails.username) {
+      let cT = new Date(timestamp() - start);
+      let raceTime = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT.getMilliseconds().pad(3)}`;
+      storeRaceData(raceDetails.userId, raceDetails.username, raceTime);
+    } else {
+      console.log("Race finished, but user data is not available.");
+    }
+  }
