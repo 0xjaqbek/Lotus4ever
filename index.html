@@ -54,10 +54,14 @@
   <script src="javascript/null.js"></script>
 
   <script>
+    window.addEventListener('resize', function() {
+    document.body.style.height = window.innerHeight + 'px';
+});
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
       console.log('Viewport width:', viewportWidth);
       console.log('Viewport height:', viewportHeight);
+
       // Prevent default touch behaviors
       document.addEventListener('touchmove', function(event) {
         event.preventDefault();
