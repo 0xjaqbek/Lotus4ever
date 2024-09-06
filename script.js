@@ -53,7 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('welcomeText').innerText = 'User data not available.';
       console.log(`User: UNAVAILABLE`);
         }
-      });
+});
+
 
 
 // ------------------------------------------------------------
@@ -528,7 +529,11 @@ const ASSETS = {
       highscores.sort();
       updateHighscore();
       console.log(`User:${userId} ${username} Lap time: ${lap.innerText}`);
-  
+      // Convert lap time (string) to a numeric value in milliseconds
+      const timeParts = lap.innerText.replace("'", ".").replace('"', ".");
+      console.log(`Exact User Time: ${timeParts}`);
+      // Send the userId, username, and lapTimeInMs to Firebase
+      submitTime(userId, username, timeParts);
       inGame = false;
     } else {
       time.innerText = (countDown | 0).pad(3);
@@ -865,25 +870,53 @@ const ASSETS = {
   
   exitButton.addEventListener('click', () => {
     reset();
-  });
+});
 
-// Store user data and race time
-function storeRaceData(userId, username, raceTime) {
-    raceDetails = {
-      userId: userId,
-      username: username,
-      raceTime: raceTime
-    };
-    console.log(`Race finished! User: ${username} (ID: ${userId}), Time: ${raceTime}`);
-  }
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Submit time function - improved to handle numeric time comparison
+function submitTime(userId, username, newTime) {
+  const userRef = db.ref('users/' + userId);
+
+  userRef.once('value').then((snapshot) => {
+    if (snapshot.exists()) {
+      const existingTime = parseFloat(snapshot.val().time);
+      const numericNewTime = parseFloat(timeParts); // Use timeParts and convert to number for comparison
   
-  // Function to be called when the race finishes
-  function onRaceFinish() {
-    if (raceDetails.userId && raceDetails.username) {
-      let cT = new Date(timestamp() - start);
-      let raceTime = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT.getMilliseconds().pad(3)}`;
-      storeRaceData(raceDetails.userId, raceDetails.username, raceTime);
+      if (numericNewTime < existingTime) {
+        // Update to the shorter time
+        userRef.update({ 
+          username: username, 
+          time: numericNewTime // Store numericNewTime instead of the string
+        }).then(() => {
+          alert(`Congratulations ${username}, you've set a new best time!`);
+        });
+      } else {
+        const diff = numericNewTime - existingTime;
+        alert(`Your time was slower by ${diff.toFixed(3)} seconds. Try again!`);
+      }
     } else {
-      console.log("Race finished, but user data is not available.");
+      // Create a new record for the user
+      userRef.set({
+        username: username,
+        time: numericNewTime // Store numericNewTime instead of the string
+      }).then(() => {
+        alert(`Welcome ${username}, your time has been recorded!`);
+      });
     }
-  }
+  }).catch((error) => {
+    console.error('Error updating time:', error);
+  });
+}
