@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const tg = window.Telegram.WebApp;
-
   // Declare username variable here for wider scope
   let username = 'UNAVAILABLE';
+
+document.addEventListener('DOMContentLoaded', function() {
+  const tg = window.Telegram.WebApp;
 
   // Ensure the app is ready
   tg.ready();
