@@ -3,11 +3,15 @@ let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
 
-// Initialize Firebase inside an event that ensures the page has loaded
-window.onload = function() {
+// Initialize Firebase immediately
+if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
-  db = firebase.database(); // Initialize the `db` here
+}
 
+db = firebase.database(); // Initialize the `db` here
+
+// Use window.onload for other initialization tasks
+window.onload = function() {
   console.log(db);
 };
 
