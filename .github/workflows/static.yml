@@ -35,9 +35,6 @@ jobs:
           echo "  messagingSenderId: '${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}'," >> firebase-config.js
           echo "  appId: '${{ secrets.FIREBASE_APP_ID }}'" >> firebase-config.js
           echo "};" >> firebase-config.js
-          
-      - name: Verify Firebase config
-        run: cat firebase-config.js
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

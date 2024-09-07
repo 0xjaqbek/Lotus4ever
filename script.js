@@ -3,20 +3,17 @@ let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
 
+
 window.onload = function() {
-  // Initialize Firebase inside an event that ensures the page has loaded
-  const firebaseConfig = {
-    apiKey: secrets.FIREBASE_API_KEY,
-    authDomain: secrets.FIREBASE_AUTH_DOMAIN,
-    databaseURL: secrets.FIREBASE_DATABASE_URL,
-    projectId: secrets.FIREBASE_PROJECT_ID,
-    storageBucket: secrets.FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: secrets.FIREBASE_MESSAGING_SENDER_ID,
-    appId: secrets.FIREBASE_APP_ID,
-  };
-  
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.database(); // Initialize the `db` here
+  // Check if firebaseConfig is defined
+  if (typeof firebaseConfig !== 'undefined') {
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    console.log("Firebase initialized successfully");
+  } else {
+    console.error("Firebase configuration is not available");
+  }
 
   console.log(db);
 };
