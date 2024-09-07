@@ -3,28 +3,23 @@ let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
 
-// Initialize Firebase immediately
-function initializeFirebase() {
-  if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-    console.log("Firebase initialized successfully");
-  } else {
-    console.error("Firebase SDK not loaded or already initialized");
-  }
-}
-
-// Use DOMContentLoaded instead of window.onload for faster execution
-document.addEventListener('DOMContentLoaded', function() {
-  initializeFirebase();
+window.onload = function() {
+  // Initialize Firebase inside an event that ensures the page has loaded
+  const firebaseConfig = {
+    apiKey: secrets.FIREBASE_API_KEY,
+    authDomain: secrets.FIREBASE_AUTH_DOMAIN,
+    databaseURL: secrets.FIREBASE_DATABASE_URL,
+    projectId: secrets.FIREBASE_PROJECT_ID,
+    storageBucket: secrets.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: secrets.FIREBASE_MESSAGING_SENDER_ID,
+    appId: secrets.FIREBASE_APP_ID,
+  };
   
-  // Rest of your initialization code...
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database(); // Initialize the `db` here
+
   console.log(db);
-
-});
-
-console.log("Firebase config:", firebaseConfig);
-console.log("Firebase SDK loaded:", typeof firebase !== 'undefined');
+};
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
