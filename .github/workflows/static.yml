@@ -22,40 +22,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Single deploy job since we're just deploying
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+      # Inject Firebase secrets into environment variables
+      - name: Inject Firebase secrets
+        run: |
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> $GITHUB_ENV
+          echo "FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}" >> $GITHUB_ENV
+          echo "FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }}" >> $GITHUB_ENV
+          echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> $GITHUB_ENV
+          echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> $GITHUB_ENV
+          echo "FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" >> $GITHUB_ENV
+          echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> $GITHUB_ENV
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # Inject secrets into environment variables
-      - name: Build project with Firebase config
-        env:
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-        run: npm run build # Or your specific build command
-
-      # Upload the build artifacts
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build' # Adjust to the output directory
+          # Upload entire repository or build output
+          path: '.'
 
-      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
