@@ -893,15 +893,18 @@ const ASSETS = {
 });
 
 
-
-// Submit time function - improved to handle numeric time comparison
 function submitTime(userId, username, newTime) {
+  if (!db) {
+    console.error('Firebase DB not initialized');
+    return;
+  }
+
   const userRef = db.ref('users/' + userId);
 
   userRef.once('value').then((snapshot) => {
     if (snapshot.exists()) {
       const existingTime = parseFloat(snapshot.val().time);
-      const numericNewTime = parseFloat(timeParts); // Use timeParts and convert to number for comparison
+      const numericNewTime = parseFloat(newTime); // Use newTime and convert to number for comparison
   
       if (numericNewTime < existingTime) {
         // Update to the shorter time
