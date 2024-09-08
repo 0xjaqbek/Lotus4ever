@@ -46,7 +46,7 @@ function initializeAppLogic() {
 // Use DOMContentLoaded instead of window.onload
 document.addEventListener('DOMContentLoaded', initializeAppLogic);
 
-// Function to convert a time string (MM:SS.mmm) to milliseconds
+// Function to convert a time string (0'00"000) to milliseconds
 function timeStringToMilliseconds(timeString) {
   // Check if the timeString is valid
   if (!timeString || typeof timeString !== 'string') {
@@ -54,25 +54,22 @@ function timeStringToMilliseconds(timeString) {
     return NaN; // Return NaN to indicate an invalid time string
   }
 
-  const timeParts = timeString.split(':');
-  if (timeParts.length !== 2) {
+  // Modify the regex to support 0'00"000 format
+  const timePattern = /^(\d+)'(\d+)"(\d{3})$/;
+  const match = timeString.match(timePattern);
+
+  if (!match) {
     console.error('Time string format is incorrect:', timeString);
     return NaN;
   }
 
-  const minutes = parseInt(timeParts[0], 10);
-  const secondsAndMillis = timeParts[1].split('.');
-  
-  if (secondsAndMillis.length !== 2) {
-    console.error('Seconds and milliseconds format is incorrect:', timeString);
-    return NaN;
-  }
-
-  const seconds = parseInt(secondsAndMillis[0], 10);
-  const milliseconds = parseInt(secondsAndMillis[1], 10);
+  const minutes = parseInt(match[1], 10);
+  const seconds = parseInt(match[2], 10);
+  const milliseconds = parseInt(match[3], 10);
 
   return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
 }
+
 
 // Example of using Telegram WebApp API after DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
