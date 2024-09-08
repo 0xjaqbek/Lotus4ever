@@ -36,7 +36,12 @@ function initializeAppLogic() {
   initializeFirebase()
     .then((db) => {
       console.log("Database reference available:", db);
-      // Add any additional app initialization logic here
+
+      // Now you can safely use `ref` and other database functions
+      const userRef = ref(db, `users/${userId}`);
+
+      // ... (Rest of your code to fetch and update data)
+
     })
     .catch((error) => {
       console.error("Failed to initialize Firebase:", error);
