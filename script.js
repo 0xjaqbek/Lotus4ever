@@ -1,29 +1,68 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
 import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
-
 
 let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
 
-window.onload = function() {
-  // Firebase configuration (replace with your own Firebase project credentials)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
-    authDomain: "lotus-8fa6e.firebaseapp.com",
-    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "lotus-8fa6e",
-    storageBucket: "lotus-8fa6e.appspot.com",
-    messagingSenderId: "42734428096",
-    appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
-  };
-  
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app); 
-  console.log(db);
+// Firebase configuration (replace with your own Firebase project credentials)
+const firebaseConfig = {
+  apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+  authDomain: "lotus-8fa6e.firebaseapp.com",
+  databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "lotus-8fa6e",
+  storageBucket: "lotus-8fa6e.appspot.com",
+  messagingSenderId: "42734428096",
+  appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
 };
+
+// Function to initialize Firebase and the database
+function initializeFirebase() {
+  return new Promise((resolve, reject) => {
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app); // Initialize Firebase Database
+      console.log("Firebase initialized successfully");
+      resolve(db);
+    } catch (error) {
+      console.error("Error initializing Firebase:", error);
+      reject(error);
+    }
+  });
+}
+
+// Main initialization function
+function initializeAppLogic() {
+  initializeFirebase()
+    .then((db) => {
+      console.log("Database reference available:", db);
+      // Add any additional app initialization logic here
+    })
+    .catch((error) => {
+      console.error("Failed to initialize Firebase:", error);
+    });
+}
+
+// Use DOMContentLoaded instead of window.onload
+document.addEventListener('DOMContentLoaded', initializeAppLogic);
+
+// Function to convert a time string (MM:SS.mmm) to milliseconds
+function timeStringToMilliseconds(timeString) {
+  const timeParts = timeString.split(':');
+  const minutes = parseInt(timeParts[0], 10);
+  const secondsAndMillis = timeParts[1].split('.');
+  const seconds = parseInt(secondsAndMillis[0], 10);
+  const milliseconds = parseInt(secondsAndMillis[1], 10);
+
+  return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+}
+
+// Example of using Telegram WebApp API after DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+  const tg = window.Telegram.WebApp;
+  // Initialize Telegram WebApp features here if needed
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -915,16 +954,7 @@ const lapTimeText = lap.innerText;
 
 // Convert lap time to milliseconds
 const numericNewTime = timeStringToMilliseconds(lapTimeText);
-// Function to convert a time string (MM:SS.mmm) to milliseconds
-function timeStringToMilliseconds(timeString) {
-  const timeParts = timeString.split(':');
-  const minutes = parseInt(timeParts[0], 10);
-  const secondsAndMillis = timeParts[1].split('.');
-  const seconds = parseInt(secondsAndMillis[0], 10);
-  const milliseconds = parseInt(secondsAndMillis[1], 10);
 
-  return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
-}
 // Firebase reference
 const userRef = firebase.database().ref(`users/${userId}`);
 
