@@ -915,7 +915,16 @@ const lapTimeText = lap.innerText;
 
 // Convert lap time to milliseconds
 const numericNewTime = timeStringToMilliseconds(lapTimeText);
+// Function to convert a time string (MM:SS.mmm) to milliseconds
+function timeStringToMilliseconds(timeString) {
+  const timeParts = timeString.split(':');
+  const minutes = parseInt(timeParts[0], 10);
+  const secondsAndMillis = timeParts[1].split('.');
+  const seconds = parseInt(secondsAndMillis[0], 10);
+  const milliseconds = parseInt(secondsAndMillis[1], 10);
 
+  return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+}
 // Firebase reference
 const userRef = firebase.database().ref(`users/${userId}`);
 
