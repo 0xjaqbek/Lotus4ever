@@ -1,51 +1,29 @@
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+
+
 let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
 
-
-// Function to initialize Firebase
-function initializeFirebase() {
-  return new Promise((resolve, reject) => {
-    const maxAttempts = 10;
-    let attempts = 0;
-
-    const tryInitialize = () => {
-      attempts++;
-      if (typeof firebase !== 'undefined' && firebase.app) {
-        if (!firebase.apps.length) {
-          // Initialize Firebase
-          firebase.initializeApp(firebaseConfig);
-        }
-        db = firebase.database();
-        console.log("Firebase initialized successfully");
-        resolve();
-      } else if (attempts < maxAttempts) {
-        // Wait and try again
-        setTimeout(tryInitialize, 500);
-      } else {
-        reject(new Error("Failed to initialize Firebase after multiple attempts"));
-      }
-    };
-
-    tryInitialize();
-  });
-}
-
-// Main initialization function
-function initializeApp() {
-  initializeFirebase()
-    .then(() => {
-      console.log("Database reference available:", db);
-    })
-    .catch((error) => {
-      console.error("Failed to initialize Firebase:", error);
-  });
-}
-
-// Use DOMContentLoaded instead of window.onload
-document.addEventListener('DOMContentLoaded', initializeApp);
-
+window.onload = function() {
+  // Firebase configuration (replace with your own Firebase project credentials)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+    authDomain: "lotus-8fa6e.firebaseapp.com",
+    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "lotus-8fa6e",
+    storageBucket: "lotus-8fa6e.appspot.com",
+    messagingSenderId: "42734428096",
+    appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
+  };
+  
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app); 
+  console.log(db);
+};
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -560,39 +538,53 @@ const ASSETS = {
       lines[endPos].special = map[mapIndex].special;
     }
   
-    // win / lose + UI
-    if (!inGame) {
-      speed = accelerate(speed, breaking, step);
-      speed = speed.clamp(0, maxSpeed);
-    } else if (countDown <= 0 || lines[startPos].special) {
-      tacho.style.display = "none";
+// win / lose + UI
+if (!inGame) {
+  speed = accelerate(speed, breaking, step);
+  speed = speed.clamp(0, maxSpeed);
+} else if (countDown <= 0 || lines[startPos].special) {
+  tacho.style.display = "none";
+  home.style.display = "block";
+  road.style.opacity = 0.4;
+  text.innerText = "PRESS PLAY";
+
+  highscores.push(lap.innerText);
+  highscores.sort();
+  updateHighscore();
+  console.log(`User:${userId} ${username} Lap time: ${lap.innerText}`);
+
+  // Convert lap time (string) to a numeric value in milliseconds
+  const timeParts = lap.innerText.replace("'", ".").replace('"', "");
   
-      home.style.display = "block";
-      road.style.opacity = 0.4;
-      text.innerText = "PRESS PLAY";
-  
-      highscores.push(lap.innerText);
-      highscores.sort();
-      updateHighscore();
-      console.log(`User:${userId} ${username} Lap time: ${lap.innerText}`);
-      // Convert lap time (string) to a numeric value in milliseconds
-      const timeParts = lap.innerText.replace("'", ".").replace('"', ".");
-      console.log(`Exact User Time: ${timeParts}`);
-      // Send the userId, username, and lapTimeInMs to Firebase
-      submitTime(userId, username, timeParts);
-      inGame = false;
-    } else {
-      time.innerText = (countDown | 0).pad(3);
-      score.innerText = (scoreVal | 0).pad(8);
-      tacho.innerText = speed | 0;
-  
-      let cT = new Date(timestamp() - start);
-      lap.innerText = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT
-        .getMilliseconds()
-        .pad(3)}`;
-    }
-  
-    // sound
+  // Split the time string into minutes, seconds, and milliseconds
+  const [minutes, secondsAndMillis] = timeParts.split('.');
+  const [seconds, milliseconds] = secondsAndMillis.split('.');
+
+  const minutesInSeconds = parseInt(minutes, 10) * 60;
+  const secondsInSeconds = parseInt(seconds, 10);
+  const millisecondsInSeconds = parseInt(milliseconds, 10) / 1000;
+
+  const totalSeconds = minutesInSeconds + secondsInSeconds + millisecondsInSeconds;
+  const totalMilliseconds = totalSeconds * 1000; // Convert totalSeconds to milliseconds
+
+  console.log(totalMilliseconds);
+  console.log(`Exact this User Time: ${timeParts}`);
+
+  // Send the userId, username, and lapTimeInMs to Firebase
+  submitTime(userId, username, timeParts);
+  inGame = false;
+} else {
+  time.innerText = (countDown | 0).toString().padStart(3, '0');
+  score.innerText = (scoreVal | 0).toString().padStart(8, '0');
+  tacho.innerText = (speed | 0).toString();
+
+  let cT = new Date(timestamp() - start);
+  lap.innerText = `${cT.getMinutes()}'${cT.getSeconds().toString().padStart(2, '0')}"${cT
+    .getMilliseconds()
+    .toString().padStart(3, '0')}`;
+}
+
+// sound
     if (speed > 0) audio.play("engine", speed * 4);
   
     // draw cloud
@@ -918,42 +910,63 @@ const ASSETS = {
     reset();
 });
 
+// Store the original lap time text
+const lapTimeText = lap.innerText;
 
-function submitTime(userId, username, newTime) {
-  if (!db) {
-    console.error('Firebase DB not initialized');
-    return;
-  }
+// Convert lap time to milliseconds
+const numericNewTime = timeStringToMilliseconds(lapTimeText);
 
-  const userRef = db.ref('users/' + userId);
+// Firebase reference
+const userRef = firebase.database().ref(`users/${userId}`);
 
-  userRef.once('value').then((snapshot) => {
-    if (snapshot.exists()) {
-      const existingTime = parseFloat(snapshot.val().time);
-      const numericNewTime = parseFloat(newTime); // Use newTime and convert to number for comparison
-  
-      if (numericNewTime < existingTime) {
-        // Update to the shorter time
-        userRef.update({ 
-          username: username, 
-          time: numericNewTime // Store numericNewTime instead of the string
-        }).then(() => {
-          alert(`Congratulations ${username}, you've set a new best time!`);
-        });
-      } else {
-        const diff = numericNewTime - existingTime;
-        alert(`Your time was slower by ${diff.toFixed(3)} seconds. Try again!`);
-      }
+// Fetch the current value
+get(userRef).then((snapshot) => {
+  if (snapshot.exists()) {
+    const userData = snapshot.val();
+    const existingTimes = userData.laps || []; // Get the existing laps array or initialize an empty one
+
+    // Add the new lap time to the array
+    existingTimes.push({
+      time: lapTimeText,          // Store the time in original format
+      numericTime: numericNewTime // Also store the numeric time for comparison
+    });
+
+    // Update the user's record with the new lap
+    userRef.update({ 
+      username: username, 
+      laps: existingTimes 
+    }).then(() => {
+      alert(`Great job ${username}, your lap time has been added!`);
+    });
+
+    // Find the fastest lap time
+    const fastestLap = existingTimes.reduce((fastest, lap) => 
+      lap.numericTime < fastest ? lap.numericTime : fastest, Infinity
+    );
+
+    if (numericNewTime < fastestLap) {
+      alert(`Congratulations ${username}, you've set a new personal best time!`);
     } else {
-      // Create a new record for the user
-      userRef.set({
-        username: username,
-        time: numericNewTime // Store numericNewTime instead of the string
-      }).then(() => {
-        alert(`Welcome ${username}, your time has been recorded!`);
-      });
+      const diff = numericNewTime - fastestLap;
+      alert(`Your time was slower by ${diff} milliseconds compared to your best time. Try again!`);
     }
-  }).catch((error) => {
-    console.error('Error updating time:', error);
-  });
-}
+
+  } else {
+    // Create a new record for the user if no data exists
+    userRef.set({
+      username: username,
+      laps: [{ 
+        time: lapTimeText, 
+        numericTime: numericNewTime 
+      }]
+    }).then(() => {
+      alert(`Welcome ${username}, your lap time has been recorded!`);
+    });
+  }
+}).catch((error) => {
+  console.error('Error updating lap times:', error);
+});
+
+// Log the lap times
+console.log(`User: ${userId} ${username} Lap time: ${lapTimeText}`);
+console.log(`Exact User Time (ms): ${numericNewTime}`);
