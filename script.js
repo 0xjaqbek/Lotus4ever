@@ -4,18 +4,30 @@ let userId = '';
 let db; // Declare `db` at a higher scope
 
 
-window.onload = function() {
-  // Check if firebaseConfig is defined
-  if (typeof firebaseConfig !== 'undefined') {
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+// Function to initialize Firebase
+function initializeFirebase() {
+  if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+    if (typeof firebaseConfig !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+      console.log("Firebase initialized successfully");
+    } else {
+      console.error("Firebase configuration is not available");
+    }
+  } else if (firebase.apps.length) {
     db = firebase.database();
-    console.log("Firebase initialized successfully");
   } else {
-    console.error("Firebase configuration is not available");
+    console.error("Firebase SDK is not loaded");
   }
+}
 
-  console.log(db);
+window.onload = function() {
+  initializeFirebase();
+  if (db) {
+    console.log("Database reference available:", db);
+  } else {
+    console.error("Failed to initialize Firebase database");
+  }
 };
 
 document.addEventListener('DOMContentLoaded', function() {
