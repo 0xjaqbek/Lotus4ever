@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+import { getDatabase, ref, get, update, set } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
 let username = '';
 let userId = '';
@@ -970,7 +970,7 @@ const lapTimeText = lap.innerText;
 const numericNewTime = timeStringToMilliseconds(lapTimeText);
 
 // Firebase reference
-const userRef = firebase.database().ref(`users/${userId}`);
+const userRef = ref(db, `users/${userId}`); // Use `ref` to reference the database path
 
 // Fetch the current value
 get(userRef).then((snapshot) => {
@@ -985,7 +985,7 @@ get(userRef).then((snapshot) => {
     });
 
     // Update the user's record with the new lap
-    userRef.update({ 
+    update(userRef, { 
       username: username, 
       laps: existingTimes 
     }).then(() => {
@@ -1006,7 +1006,7 @@ get(userRef).then((snapshot) => {
 
   } else {
     // Create a new record for the user if no data exists
-    userRef.set({
+    set(userRef, {
       username: username,
       laps: [{ 
         time: lapTimeText, 
