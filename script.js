@@ -6,29 +6,46 @@ let db; // Declare `db` at a higher scope
 
 // Function to initialize Firebase
 function initializeFirebase() {
-  if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-    if (typeof firebaseConfig !== 'undefined') {
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.database();
-      console.log("Firebase initialized successfully");
-    } else {
-      console.error("Firebase configuration is not available");
-    }
-  } else if (firebase.apps.length) {
-    db = firebase.database();
-  } else {
-    console.error("Firebase SDK is not loaded");
-  }
+  return new Promise((resolve, reject) => {
+    const maxAttempts = 10;
+    let attempts = 0;
+
+    const tryInitialize = () => {
+      attempts++;
+      if (typeof firebase !== 'undefined' && firebase.app) {
+        if (!firebase.apps.length) {
+          // Initialize Firebase
+          firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.database();
+        console.log("Firebase initialized successfully");
+        resolve();
+      } else if (attempts < maxAttempts) {
+        // Wait and try again
+        setTimeout(tryInitialize, 500);
+      } else {
+        reject(new Error("Failed to initialize Firebase after multiple attempts"));
+      }
+    };
+
+    tryInitialize();
+  });
 }
 
-window.onload = function() {
-  initializeFirebase();
-  if (db) {
-    console.log("Database reference available:", db);
-  } else {
-    console.error("Failed to initialize Firebase database");
-  }
-};
+// Main initialization function
+function initializeApp() {
+  initializeFirebase()
+    .then(() => {
+      console.log("Database reference available:", db);
+    })
+    .catch((error) => {
+      console.error("Failed to initialize Firebase:", error);
+  });
+}
+
+// Use DOMContentLoaded instead of window.onload
+document.addEventListener('DOMContentLoaded', initializeApp);
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
