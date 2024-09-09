@@ -11,6 +11,8 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
   <script>
+    import { initializeApp } from "firebase/app";
+    import { getDatabase, ref, set, get, update as firebaseUpdate } from 'firebase/database';
     // Firebase configuration
     const firebaseConfig = {
     apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
