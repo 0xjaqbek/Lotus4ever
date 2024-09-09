@@ -974,9 +974,6 @@ const lapTimeText = lap.innerText;
 // Convert lap time to milliseconds
 const numericNewTime = timeStringToMilliseconds(lapTimeText);
 
-// Firebase reference
-const userRef = ref(db, `users/${userId}`);
-
 // Fetch the current value
 get(userRef).then((snapshot) => {
   if (snapshot.exists()) {
