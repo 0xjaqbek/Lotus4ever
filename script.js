@@ -7,23 +7,6 @@ let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
 
-window.onload = function() {
-  // Firebase configuration (replace with your own Firebase project credentials)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
-    authDomain: "lotus-8fa6e.firebaseapp.com",
-    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "lotus-8fa6e",
-    storageBucket: "lotus-8fa6e.appspot.com",
-    messagingSenderId: "42734428096",
-    appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
-  };
-  
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app); 
-  console.log(db);
-};
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;

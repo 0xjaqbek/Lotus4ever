@@ -10,7 +10,61 @@
     <script src="https://www.gstatic.com/firebasejs/9.x/firebase-database.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+    authDomain: "lotus-8fa6e.firebaseapp.com",
+    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "lotus-8fa6e",
+    storageBucket: "lotus-8fa6e.appspot.com",
+    messagingSenderId: "42734428096",
+    };
 
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Define function to submit time
+    function submitTime(userId, username, newTime) {
+      if (!db) {
+        console.error('Firebase DB not initialized');
+        return;
+      }
+
+      const userRef = db.ref('users/' + userId);
+
+      userRef.once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+          const existingTime = parseFloat(snapshot.val().time);
+          const numericNewTime = parseFloat(newTime); // Convert newTime to a number for comparison
+
+          if (numericNewTime < existingTime) {
+            // Update to the shorter time
+            userRef.update({ 
+              username: username, 
+              time: numericNewTime // Store numericNewTime instead of the string
+            }).then(() => {
+              alert(`Congratulations ${username}, you've set a new best time!`);
+            });
+          } else {
+            const diff = numericNewTime - existingTime;
+            alert(`Your time was slower by ${diff.toFixed(3)} seconds. Try again!`);
+          }
+        } else {
+          // Create a new record for the user
+          userRef.set({
+            username: username,
+            time: numericNewTime // Store numericNewTime instead of the string
+          }).then(() => {
+            alert(`Welcome ${username}, your time has been recorded!`);
+          });
+        }
+      }).catch((error) => {
+        console.error('Error updating time:', error);
+      });
+    }
+  </script>
   <body translate="no">
   <div id="all"></div>
     <div id="game">
