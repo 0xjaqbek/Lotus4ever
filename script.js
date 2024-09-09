@@ -20,12 +20,8 @@ window.onload = function() {
   };
   
   // Initialize Firebase
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Get a reference to the database
-const db = firebase.database();
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app); 
   console.log(db);
 };
 
