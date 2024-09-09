@@ -1,3 +1,6 @@
+import firebase from 'firebase/app';
+import 'firebase/database';
+
 let username = '';
 let userId = '';
 
