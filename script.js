@@ -3,7 +3,7 @@ import { getDatabase, ref, get, update as firebaseUpdate, set } from "https://ww
 
 let username = '';
 let userId = '';
-
+let userRef = '';
 
 // Firebase configuration (replace with your own Firebase project credentials)
 const firebaseConfig = {
