@@ -5,75 +5,96 @@ let username = '';
 let userId = '';
 
 
-// Firebase configuration (replace with your own Firebase project credentials)
-const firebaseConfig = {
-  apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
-  authDomain: "lotus-8fa6e.firebaseapp.com",
-  databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "lotus-8fa6e",
-  storageBucket: "lotus-8fa6e.appspot.com",
-  messagingSenderId: "42734428096",
-  appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
-};
-let db; // Declare `db` at a higher scope
-// Function to initialize Firebase and the database
-function initializeFirebase() {
-  return new Promise((resolve, reject) => {
+// Create a global object to hold Firebase-related functions and references
+const FirebaseApp = {
+  db: null,
+  initialized: false,
+
+  // Firebase configuration
+  config: {
+    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+    authDomain: "lotus-8fa6e.firebaseapp.com",
+    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "lotus-8fa6e",
+    storageBucket: "lotus-8fa6e.appspot.com",
+    messagingSenderId: "42734428096",
+    appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
+  },
+
+  // Initialize Firebase
+  init: async function() {
+    if (this.initialized) return;
+
     try {
-      const app = initializeApp(firebaseConfig);
-      db = getDatabase(app); // Initialize Firebase Database
+      const app = initializeApp(this.config);
+      this.db = getDatabase(app);
+      this.initialized = true;
       console.log("Firebase initialized successfully");
-      resolve(db);
     } catch (error) {
       console.error("Error initializing Firebase:", error);
-      reject(error);
+      throw error;
     }
-  });
-}
+  },
 
-// Main initialization function
-function initializeAppLogic() {
-  initializeFirebase()
-    .then((db) => {
-      console.log("Database reference available:", db);
+  // Get a database reference
+  getRef: function(path) {
+    if (!this.initialized) {
+      throw new Error("Firebase not initialized. Call FirebaseApp.init() first.");
+    }
+    return ref(this.db, path);
+  },
 
-      // Now you can safely use `ref` and other database functions
-      const userRef = ref(db, `users/${userId}`);
+  // Submit time to Firebase
+  submitTime: async function(userId, username, lapTime) {
+    if (!this.initialized) {
+      throw new Error("Firebase not initialized. Call FirebaseApp.init() first.");
+    }
 
-      // ... (Rest of your code to fetch and update data)
+    const userRef = this.getRef(`users/${userId}`);
+    const numericNewTime = timeStringToMilliseconds(lapTime);
 
-    })
-    .catch((error) => {
-      console.error("Failed to initialize Firebase:", error);
-    });
-}
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        const existingTimes = userData.laps || [];
 
-// Use DOMContentLoaded instead of window.onload
-document.addEventListener('DOMContentLoaded', initializeAppLogic);
+        existingTimes.push({
+          time: lapTime,
+          numericTime: numericNewTime
+        });
 
-// Function to convert a time string (0'00"000) to milliseconds
-function timeStringToMilliseconds(timeString) {
-  // Check if the timeString is valid
-  if (!timeString || typeof timeString !== 'string') {
-    console.error('Invalid time string:', timeString);
-    return NaN; // Return NaN to indicate an invalid time string
+        await firebaseUpdate(userRef, { 
+          username: username, 
+          laps: existingTimes 
+        });
+
+        console.log(`Lap time added for ${username}`);
+
+        // Find the fastest lap time
+        const fastestLap = Math.min(...existingTimes.map(lap => lap.numericTime));
+
+        if (numericNewTime < fastestLap) {
+          console.log(`New personal best for ${username}!`);
+        } else {
+          const diff = numericNewTime - fastestLap;
+          console.log(`Time was slower by ${diff} milliseconds compared to best time.`);
+        }
+      } else {
+        await set(userRef, {
+          username: username,
+          laps: [{ 
+            time: lapTime, 
+            numericTime: numericNewTime 
+          }]
+        });
+        console.log(`First lap time recorded for ${username}`);
+      }
+    } catch (error) {
+      console.error('Error updating lap times:', error);
+    }
   }
-
-  // Modify the regex to support 0'00"000 format
-  const timePattern = /^(\d+)'(\d+)"(\d{3})$/;
-  const match = timeString.match(timePattern);
-
-  if (!match) {
-    console.error('Time string format is incorrect:', timeString);
-    return NaN;
-  }
-
-  const minutes = parseInt(match[1], 10);
-  const seconds = parseInt(match[2], 10);
-  const milliseconds = parseInt(match[3], 10);
-
-  return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
-}
+};
 
 
 // Example of using Telegram WebApp API after DOMContentLoaded
@@ -1029,18 +1050,22 @@ function submitTime(userId, username, lapTime) {
 }
 
 // Main initialization function
-function initializeAppLogic() {
-  initializeFirebase()
-    .then((database) => {
-      console.log("Database reference available:", database);
-      // Now you can safely use Firebase database functions
-      // Initialize the rest of your app logic here
-      init(); // Assuming this is your main game initialization function
-    })
-    .catch((error) => {
-      console.error("Failed to initialize Firebase:", error);
-    });
+async function initializeAppLogic() {
+  try {
+    await FirebaseApp.init();
+    // Now you can safely use Firebase database functions
+    // Initialize the rest of your app logic here
+    init(); // Assuming this is your main game initialization function
+  } catch (error) {
+    console.error("Failed to initialize app:", error);
+  }
 }
 
 // Use DOMContentLoaded to ensure the DOM is fully loaded before initializing
 document.addEventListener('DOMContentLoaded', initializeAppLogic);
+
+// Update the existing submitTime function to use the new FirebaseApp object
+function submitTime(userId, username, lapTime) {
+  FirebaseApp.submitTime(userId, username, lapTime)
+    .catch(error => console.error("Error submitting time:", error));
+}
