@@ -1,6 +1,6 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, ref, set, get, update } from 'firebase/database';
+import { getDatabase, ref, set, get, update as firebaseUpdate } from 'firebase/database';
 
 
 let username = '';
@@ -925,7 +925,7 @@ function submitTime(userId, username, newTime) {
 
       if (numericNewTime < existingTime) {
         // Update to the shorter time
-        update(userRef, { 
+        firebaseUpdate(userRef, { 
           username: username, 
           time: numericNewTime // Store numericNewTime instead of the string
         }).then(() => {
