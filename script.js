@@ -910,11 +910,11 @@ if (!inGame) {
     reset();
 });
 
-// Convert lap time to milliseconds
-const numericNewTime = timeStringToMilliseconds(lapTimeText);
-
 // Store the original lap time text
 const lapTimeText = lap.innerText;
+
+// Convert lap time to milliseconds
+const numericNewTime = timeStringToMilliseconds(lapTimeText);
 
 // Function to convert time string (mm:ss.SSS) to milliseconds
 function timeStringToMilliseconds(timeString) {
