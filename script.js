@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+import { getDatabase, ref, get, update as firebaseUpdate, set } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
 let username = '';
 let userId = '';
@@ -36,7 +36,12 @@ function initializeAppLogic() {
   initializeFirebase()
     .then((db) => {
       console.log("Database reference available:", db);
-      // Add any additional app initialization logic here
+
+      // Now you can safely use `ref` and other database functions
+      const userRef = ref(db, `users/${userId}`);
+
+      // ... (Rest of your code to fetch and update data)
+
     })
     .catch((error) => {
       console.error("Failed to initialize Firebase:", error);
@@ -970,7 +975,7 @@ const lapTimeText = lap.innerText;
 const numericNewTime = timeStringToMilliseconds(lapTimeText);
 
 // Firebase reference
-const userRef = firebase.database().ref(`users/${userId}`);
+const userRef = ref(db, `users/${userId}`);
 
 // Fetch the current value
 get(userRef).then((snapshot) => {
@@ -984,8 +989,8 @@ get(userRef).then((snapshot) => {
       numericTime: numericNewTime // Also store the numeric time for comparison
     });
 
-    // Update the user's record with the new lap
-    userRef.update({ 
+    // Update the user's record with the new lap using firebaseUpdate alias
+    firebaseUpdate(userRef, { 
       username: username, 
       laps: existingTimes 
     }).then(() => {
@@ -1006,7 +1011,7 @@ get(userRef).then((snapshot) => {
 
   } else {
     // Create a new record for the user if no data exists
-    userRef.set({
+    set(userRef, {
       username: username,
       laps: [{ 
         time: lapTimeText, 
