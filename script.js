@@ -20,8 +20,12 @@ window.onload = function() {
   };
   
   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app); 
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the database
+const db = firebase.database();
   console.log(db);
 };
 
@@ -909,6 +913,7 @@ if (!inGame) {
   exitButton.addEventListener('click', () => {
     reset();
 });
+
 function submitTime(userId, username, newTime) {
   if (!db) {
     console.error('Firebase DB not initialized');
@@ -921,7 +926,7 @@ function submitTime(userId, username, newTime) {
     if (snapshot.exists()) {
       const existingTime = parseFloat(snapshot.val().time);
       const numericNewTime = parseFloat(newTime); // Use newTime and convert to number for comparison
-  
+
       if (numericNewTime < existingTime) {
         // Update to the shorter time
         userRef.update({ 
