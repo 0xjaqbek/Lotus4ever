@@ -1,6 +1,6 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+import { getDatabase, ref, set, get, update } from 'firebase/database';
 
 
 let username = '';
@@ -916,16 +916,16 @@ function submitTime(userId, username, newTime) {
     return;
   }
 
-  const userRef = db.ref('users/' + userId);
+  const userRef = ref(db, 'users/' + userId);
 
-  userRef.once('value').then((snapshot) => {
+  get(userRef).then((snapshot) => {
     if (snapshot.exists()) {
       const existingTime = parseFloat(snapshot.val().time);
-      const numericNewTime = parseFloat(newTime); // Use newTime and convert to number for comparison
+      const numericNewTime = parseFloat(newTime); // Convert newTime to a number for comparison
 
       if (numericNewTime < existingTime) {
         // Update to the shorter time
-        userRef.update({ 
+        update(userRef, { 
           username: username, 
           time: numericNewTime // Store numericNewTime instead of the string
         }).then(() => {
@@ -937,7 +937,7 @@ function submitTime(userId, username, newTime) {
       }
     } else {
       // Create a new record for the user
-      userRef.set({
+      set(userRef, {
         username: username,
         time: numericNewTime // Store numericNewTime instead of the string
       }).then(() => {
