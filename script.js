@@ -1,5 +1,5 @@
-import firebase from 'firebase/app';
-import 'firebase/database';
+import firebase from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js';
+import 'https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js';
 
 let username = '';
 let userId = '';
@@ -886,7 +886,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // Submit time function - improved to handle numeric time comparison
