@@ -3,9 +3,11 @@ import { getDatabase, ref, get, update as firebaseUpdate, set } from "https://ww
 
 let username = '';
 let userId = '';
-let db; // Declare `db` at a higher scope
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+import { getDatabase, ref, get, set, update as firebaseUpdate } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
-// Firebase configuration (replace with your own Firebase project credentials)
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
   authDomain: "lotus-8fa6e.firebaseapp.com",
@@ -16,40 +18,42 @@ const firebaseConfig = {
   appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
 };
 
-// Function to initialize Firebase and the database
-function initializeFirebase() {
-  return new Promise((resolve, reject) => {
-    try {
-      const app = initializeApp(firebaseConfig);
-      db = getDatabase(app); // Initialize Firebase Database
-      console.log("Firebase initialized successfully");
-      resolve(db);
-    } catch (error) {
-      console.error("Error initializing Firebase:", error);
-      reject(error);
+// Declare db variable globally
+let db;
+
+// Initialize Firebase when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app); // Initialize the Firebase Database after the app is initialized
+  console.log("Firebase initialized and DB reference set.");
+
+  // Now that Firebase is initialized, call your function
+  exampleFunction("testUserId");
+});
+
+// Example function using the Firebase Database
+function exampleFunction(userId) {
+  if (!db) {
+    console.error("Firebase database is not initialized yet.");
+    return;
+  }
+
+  // Reference to user data in Firebase Database
+  const userRef = ref(db, `users/${userId}`);
+
+  // Fetch the current value
+  get(userRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      console.log("User data:", userData);
+    } else {
+      console.log("No data available.");
     }
+  }).catch((error) => {
+    console.error("Error fetching user data:", error);
   });
 }
 
-// Main initialization function
-function initializeAppLogic() {
-  initializeFirebase()
-    .then((db) => {
-      console.log("Database reference available:", db);
-
-      // Now you can safely use `ref` and other database functions
-      const userRef = ref(db, `users/${userId}`);
-
-      // ... (Rest of your code to fetch and update data)
-
-    })
-    .catch((error) => {
-      console.error("Failed to initialize Firebase:", error);
-    });
-}
-
-// Use DOMContentLoaded instead of window.onload
-document.addEventListener('DOMContentLoaded', initializeAppLogic);
 
 // Function to convert a time string (0'00"000) to milliseconds
 function timeStringToMilliseconds(timeString) {
