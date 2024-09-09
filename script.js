@@ -917,7 +917,7 @@ function submitTime(userId, username, newTime) {
     return;
   }
 
-  const userRef = ref(db, 'users/' + userId);
+  const userRef = firebase.database().ref(`users/${userId}`);
 
   get(userRef).then((snapshot) => {
     if (snapshot.exists()) {
