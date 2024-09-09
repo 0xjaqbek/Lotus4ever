@@ -909,77 +909,41 @@ if (!inGame) {
   exitButton.addEventListener('click', () => {
     reset();
 });
-
-// Store the original lap time text
-const lapTimeText = lap.innerText;
-
-// Convert lap time to milliseconds
-const numericNewTime = timeStringToMilliseconds(lapTimeText);
-
-// Function to convert time string (mm:ss.SSS) to milliseconds
-function timeStringToMilliseconds(timeString) {
-  const [minutes, seconds] = timeString.split(':');
-  const [sec, milliseconds] = seconds.split('.');
-
-  const totalMilliseconds = (parseInt(minutes, 10) * 60 * 1000) + (parseInt(sec, 10) * 1000) + (parseInt(milliseconds, 10));
-  return totalMilliseconds;
-}
-
-console.log(numericNewTime);  // Should output the lap time in milliseconds
-
-
-
-// Firebase reference
-const userRef = firebase.database().ref(`users/${userId}`);
-
-// Fetch the current value
-get(userRef).then((snapshot) => {
-  if (snapshot.exists()) {
-    const userData = snapshot.val();
-    const existingTimes = userData.laps || []; // Get the existing laps array or initialize an empty one
-
-    // Add the new lap time to the array
-    existingTimes.push({
-      time: lapTimeText,          // Store the time in original format
-      numericTime: numericNewTime // Also store the numeric time for comparison
-    });
-
-    // Update the user's record with the new lap
-    userRef.update({ 
-      username: username, 
-      laps: existingTimes 
-    }).then(() => {
-      alert(`Great job ${username}, your lap time has been added!`);
-    });
-
-    // Find the fastest lap time
-    const fastestLap = existingTimes.reduce((fastest, lap) => 
-      lap.numericTime < fastest ? lap.numericTime : fastest, Infinity
-    );
-
-    if (numericNewTime < fastestLap) {
-      alert(`Congratulations ${username}, you've set a new personal best time!`);
-    } else {
-      const diff = numericNewTime - fastestLap;
-      alert(`Your time was slower by ${diff} milliseconds compared to your best time. Try again!`);
-    }
-
-  } else {
-    // Create a new record for the user if no data exists
-    userRef.set({
-      username: username,
-      laps: [{ 
-        time: lapTimeText, 
-        numericTime: numericNewTime 
-      }]
-    }).then(() => {
-      alert(`Welcome ${username}, your lap time has been recorded!`);
-    });
+function submitTime(userId, username, newTime) {
+  if (!db) {
+    console.error('Firebase DB not initialized');
+    return;
   }
-}).catch((error) => {
-  console.error('Error updating lap times:', error);
-});
 
-// Log the lap times
-console.log(`User: ${userId} ${username} Lap time: ${lapTimeText}`);
-console.log(`Exact User Time (ms): ${numericNewTime}`);
+  const userRef = db.ref('users/' + userId);
+
+  userRef.once('value').then((snapshot) => {
+    if (snapshot.exists()) {
+      const existingTime = parseFloat(snapshot.val().time);
+      const numericNewTime = parseFloat(newTime); // Use newTime and convert to number for comparison
+  
+      if (numericNewTime < existingTime) {
+        // Update to the shorter time
+        userRef.update({ 
+          username: username, 
+          time: numericNewTime // Store numericNewTime instead of the string
+        }).then(() => {
+          alert(`Congratulations ${username}, you've set a new best time!`);
+        });
+      } else {
+        const diff = numericNewTime - existingTime;
+        alert(`Your time was slower by ${diff.toFixed(3)} seconds. Try again!`);
+      }
+    } else {
+      // Create a new record for the user
+      userRef.set({
+        username: username,
+        time: numericNewTime // Store numericNewTime instead of the string
+      }).then(() => {
+        alert(`Welcome ${username}, your time has been recorded!`);
+      });
+    }
+  }).catch((error) => {
+    console.error('Error updating time:', error);
+  });
+}
