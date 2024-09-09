@@ -910,6 +910,9 @@ if (!inGame) {
     reset();
 });
 
+// Convert lap time to milliseconds
+const numericNewTime = timeStringToMilliseconds(lapTimeText);
+
 // Store the original lap time text
 const lapTimeText = lap.innerText;
 
@@ -924,8 +927,7 @@ function timeStringToMilliseconds(timeString) {
 
 console.log(numericNewTime);  // Should output the lap time in milliseconds
 
-// Convert lap time to milliseconds
-const numericNewTime = timeStringToMilliseconds(lapTimeText);
+
 
 // Firebase reference
 const userRef = firebase.database().ref(`users/${userId}`);
