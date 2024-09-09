@@ -910,6 +910,7 @@ if (!inGame) {
     reset();
 });
 
+// Function to submit time
 function submitTime(userId, username, newTime) {
   if (!db) {
     console.error('Firebase DB not initialized');
