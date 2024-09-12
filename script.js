@@ -1,17 +1,15 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, ref, get, update as firebaseUpdate, set } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+
 
 let username = '';
 let userId = '';
+let db; // Declare `db` at a higher scope
 
-
-// Create a global object to hold Firebase-related functions and references
-const FirebaseApp = {
-  db: null,
-  initialized: false,
-
-  // Firebase configuration
-  config: {
+window.onload = function() {
+  // Firebase configuration (replace with your own Firebase project credentials)
+  const firebaseConfig = {
     apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
     authDomain: "lotus-8fa6e.firebaseapp.com",
     databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
@@ -19,90 +17,13 @@ const FirebaseApp = {
     storageBucket: "lotus-8fa6e.appspot.com",
     messagingSenderId: "42734428096",
     appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
-  },
-
+  };
+  
   // Initialize Firebase
-  init: async function() {
-    if (this.initialized) return;
-
-    try {
-      const app = initializeApp(this.config);
-      this.db = getDatabase(app);
-      this.initialized = true;
-      console.log("Firebase initialized successfully");
-    } catch (error) {
-      console.error("Error initializing Firebase:", error);
-      throw error;
-    }
-  },
-
-  // Get a database reference
-  getRef: function(path) {
-    if (!this.initialized) {
-      throw new Error("Firebase not initialized. Call FirebaseApp.init() first.");
-    }
-    return ref(this.db, path);
-  },
-
-  // Submit time to Firebase
-  submitTime: async function(userId, username, lapTime) {
-    if (!this.initialized) {
-      throw new Error("Firebase not initialized. Call FirebaseApp.init() first.");
-    }
-
-    const userRef = this.getRef(`users/${userId}`);
-    const numericNewTime = timeStringToMilliseconds(lapTime);
-
-    try {
-      const snapshot = await get(userRef);
-      if (snapshot.exists()) {
-        const userData = snapshot.val();
-        const existingTimes = userData.laps || [];
-
-        existingTimes.push({
-          time: lapTime,
-          numericTime: numericNewTime
-        });
-
-        await firebaseUpdate(userRef, { 
-          username: username, 
-          laps: existingTimes 
-        });
-
-        console.log(`Lap time added for ${username}`);
-
-        // Find the fastest lap time
-        const fastestLap = Math.min(...existingTimes.map(lap => lap.numericTime));
-
-        if (numericNewTime < fastestLap) {
-          console.log(`New personal best for ${username}!`);
-        } else {
-          const diff = numericNewTime - fastestLap;
-          console.log(`Time was slower by ${diff} milliseconds compared to best time.`);
-        }
-      } else {
-        await set(userRef, {
-          username: username,
-          laps: [{ 
-            time: lapTime, 
-            numericTime: numericNewTime 
-          }]
-        });
-        console.log(`First lap time recorded for ${username}`);
-      }
-    } catch (error) {
-      console.error('Error updating lap times:', error);
-    }
-  }
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app); 
+  console.log(db);
 };
-
-
-// Example of using Telegram WebApp API after DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-  const tg = window.Telegram.WebApp;
-  // Initialize Telegram WebApp features here if needed
-});
-
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -989,23 +910,63 @@ if (!inGame) {
     reset();
 });
 
-// Main initialization function
-async function initializeAppLogic() {
-  try {
-    await FirebaseApp.init();
-    // Now you can safely use Firebase database functions
-    // Initialize the rest of your app logic here
-    init(); // Assuming this is your main game initialization function
-  } catch (error) {
-    console.error("Failed to initialize app:", error);
+// Store the original lap time text
+const lapTimeText = lap.innerText;
+
+// Convert lap time to milliseconds
+const numericNewTime = timeStringToMilliseconds(lapTimeText);
+
+// Firebase reference
+const userRef = firebase.database().ref(`users/${userId}`);
+
+// Fetch the current value
+get(userRef).then((snapshot) => {
+  if (snapshot.exists()) {
+    const userData = snapshot.val();
+    const existingTimes = userData.laps || []; // Get the existing laps array or initialize an empty one
+
+    // Add the new lap time to the array
+    existingTimes.push({
+      time: lapTimeText,          // Store the time in original format
+      numericTime: numericNewTime // Also store the numeric time for comparison
+    });
+
+    // Update the user's record with the new lap
+    userRef.update({ 
+      username: username, 
+      laps: existingTimes 
+    }).then(() => {
+      alert(`Great job ${username}, your lap time has been added!`);
+    });
+
+    // Find the fastest lap time
+    const fastestLap = existingTimes.reduce((fastest, lap) => 
+      lap.numericTime < fastest ? lap.numericTime : fastest, Infinity
+    );
+
+    if (numericNewTime < fastestLap) {
+      alert(`Congratulations ${username}, you've set a new personal best time!`);
+    } else {
+      const diff = numericNewTime - fastestLap;
+      alert(`Your time was slower by ${diff} milliseconds compared to your best time. Try again!`);
+    }
+
+  } else {
+    // Create a new record for the user if no data exists
+    userRef.set({
+      username: username,
+      laps: [{ 
+        time: lapTimeText, 
+        numericTime: numericNewTime 
+      }]
+    }).then(() => {
+      alert(`Welcome ${username}, your lap time has been recorded!`);
+    });
   }
-}
+}).catch((error) => {
+  console.error('Error updating lap times:', error);
+});
 
-// Use DOMContentLoaded to ensure the DOM is fully loaded before initializing
-document.addEventListener('DOMContentLoaded', initializeAppLogic);
-
-// Update the existing submitTime function to use the new FirebaseApp object
-function submitTime(userId, username, lapTime) {
-  FirebaseApp.submitTime(userId, username, lapTime)
-    .catch(error => console.error("Error submitting time:", error));
-}
+// Log the lap times
+console.log(`User: ${userId} ${username} Lap time: ${lapTimeText}`);
+console.log(`Exact User Time (ms): ${numericNewTime}`);
