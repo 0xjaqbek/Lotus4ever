@@ -1,8 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, ref, get, update as firebaseUpdate, set } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
 let username = '';
 let userId = '';
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+import { getDatabase, ref, get, set, update as firebaseUpdate } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -974,6 +975,12 @@ const lapTimeText = lap.innerText;
 
 // Convert lap time to milliseconds
 const numericNewTime = timeStringToMilliseconds(lapTimeText);
+
+// Firebase reference (ensure db is not undefined)
+if (!db) {
+  console.error('Firebase database is not initialized.');
+  return;
+}
 
 // Firebase reference
 const userRef = ref(db, `users/${userId}`);
