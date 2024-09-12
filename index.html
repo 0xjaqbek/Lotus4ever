@@ -6,8 +6,60 @@
     <link rel="icon" href="icon.png" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P" />
     <link rel="stylesheet" href="styles.css" />
-    <script src="https://www.gstatic.com/firebasejs/9.x/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x/firebase-database.js"></script>
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+      import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+    
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+        authDomain: "lotus-8fa6e.firebaseapp.com",
+        databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "lotus-8fa6e",
+        storageBucket: "lotus-8fa6e.appspot.com",
+        messagingSenderId: "42734428096",
+        appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+    
+      // Make Firebase functions available globally
+      window.submitTime = function(userId, username, newTime) {
+        const userRef = ref(db, 'users/' + userId);
+    
+        get(userRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const existingTime = parseFloat(snapshot.val().time);
+            const numericNewTime = parseFloat(newTime);
+      
+            if (numericNewTime < existingTime) {
+              // Update to the shorter time
+              set(userRef, { 
+                username: username, 
+                time: numericNewTime
+              }).then(() => {
+                alert(`Congratulations ${username}, you've set a new best time!`);
+              });
+            } else {
+              const diff = numericNewTime - existingTime;
+              alert(`Your time was slower by ${diff.toFixed(3)} seconds. Try again!`);
+            }
+          } else {
+            // Create a new record for the user
+            set(userRef, {
+              username: username,
+              time: parseFloat(newTime)
+            }).then(() => {
+              alert(`Welcome ${username}, your time has been recorded!`);
+            });
+          }
+        }).catch((error) => {
+          console.error('Error updating time:', error);
+        });
+      };
+    </script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
 

@@ -533,7 +533,7 @@ const ASSETS = {
       const timeParts = lap.innerText.replace("'", ".").replace('"', ".");
       console.log(`Exact User Time: ${timeParts}`);
       // Send the userId, username, and lapTimeInMs to Firebase
-      submitTime(userId, username, timeParts);
+      window.submitTime(userId, username, timeParts);
       inGame = false;
     } else {
       time.innerText = (countDown | 0).pad(3);
@@ -872,29 +872,8 @@ const ASSETS = {
     reset();
 });
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
-  authDomain: "lotus-8fa6e.firebaseapp.com",
-  databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "lotus-8fa6e",
-  storageBucket: "lotus-8fa6e.appspot.com",
-  messagingSenderId: "42734428096",
-  appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
-};
-
-let db; // Declare `db` at a higher scope
-
-window.onload = function() {
-  // Initialize Firebase inside an event that ensures the page has loaded
-  const firebaseConfig = { /* your Firebase config */ };
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.database(); // Initialize the `db` here
-
-  console.log(db);
-};
-
 // Submit time function - improved to handle numeric time comparison
-function submitTime(userId, username, newTime) {
+function submitTime(userId, username, timeParts) {
   const userRef = db.ref('users/' + userId);
 
   userRef.once('value').then((snapshot) => {
