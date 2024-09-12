@@ -1,33 +1,5 @@
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
-
-
 let username = '';
 let userId = '';
-let db; // Declare `db` at a higher scope
-
-window.onload = function() {
-  // Firebase configuration (replace with your own Firebase project credentials)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
-    authDomain: "lotus-8fa6e.firebaseapp.com",
-    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "lotus-8fa6e",
-    storageBucket: "lotus-8fa6e.appspot.com",
-    messagingSenderId: "42734428096",
-    appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
-  };
-  
-  // Initialize Firebase
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Get a reference to the database
-const db = firebase.database();
-  console.log(db);
-};
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -542,53 +514,39 @@ const ASSETS = {
       lines[endPos].special = map[mapIndex].special;
     }
   
-// win / lose + UI
-if (!inGame) {
-  speed = accelerate(speed, breaking, step);
-  speed = speed.clamp(0, maxSpeed);
-} else if (countDown <= 0 || lines[startPos].special) {
-  tacho.style.display = "none";
-  home.style.display = "block";
-  road.style.opacity = 0.4;
-  text.innerText = "PRESS PLAY";
-
-  highscores.push(lap.innerText);
-  highscores.sort();
-  updateHighscore();
-  console.log(`User:${userId} ${username} Lap time: ${lap.innerText}`);
-
-  // Convert lap time (string) to a numeric value in milliseconds
-  const timeParts = lap.innerText.replace("'", ".").replace('"', "");
+    // win / lose + UI
+    if (!inGame) {
+      speed = accelerate(speed, breaking, step);
+      speed = speed.clamp(0, maxSpeed);
+    } else if (countDown <= 0 || lines[startPos].special) {
+      tacho.style.display = "none";
   
-  // Split the time string into minutes, seconds, and milliseconds
-  const [minutes, secondsAndMillis] = timeParts.split('.');
-  const [seconds, milliseconds] = secondsAndMillis.split('.');
-
-  const minutesInSeconds = parseInt(minutes, 10) * 60;
-  const secondsInSeconds = parseInt(seconds, 10);
-  const millisecondsInSeconds = parseInt(milliseconds, 10) / 1000;
-
-  const totalSeconds = minutesInSeconds + secondsInSeconds + millisecondsInSeconds;
-  const totalMilliseconds = totalSeconds * 1000; // Convert totalSeconds to milliseconds
-
-  console.log(totalMilliseconds);
-  console.log(`Exact this User Time: ${timeParts}`);
-
-  // Send the userId, username, and lapTimeInMs to Firebase
-  submitTime(userId, username, timeParts);
-  inGame = false;
-} else {
-  time.innerText = (countDown | 0).toString().padStart(3, '0');
-  score.innerText = (scoreVal | 0).toString().padStart(8, '0');
-  tacho.innerText = (speed | 0).toString();
-
-  let cT = new Date(timestamp() - start);
-  lap.innerText = `${cT.getMinutes()}'${cT.getSeconds().toString().padStart(2, '0')}"${cT
-    .getMilliseconds()
-    .toString().padStart(3, '0')}`;
-}
-
-// sound
+      home.style.display = "block";
+      road.style.opacity = 0.4;
+      text.innerText = "PRESS PLAY";
+  
+      highscores.push(lap.innerText);
+      highscores.sort();
+      updateHighscore();
+      console.log(`User:${userId} ${username} Lap time: ${lap.innerText}`);
+      // Convert lap time (string) to a numeric value in milliseconds
+      const timeParts = lap.innerText.replace("'", ".").replace('"', ".");
+      console.log(`Exact User Time: ${timeParts}`);
+      // Send the userId, username, and lapTimeInMs to Firebase
+      submitTime(userId, username, timeParts);
+      inGame = false;
+    } else {
+      time.innerText = (countDown | 0).pad(3);
+      score.innerText = (scoreVal | 0).pad(8);
+      tacho.innerText = speed | 0;
+  
+      let cT = new Date(timestamp() - start);
+      lap.innerText = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT
+        .getMilliseconds()
+        .pad(3)}`;
+    }
+  
+    // sound
     if (speed > 0) audio.play("engine", speed * 4);
   
     // draw cloud
@@ -914,19 +872,36 @@ if (!inGame) {
     reset();
 });
 
-function submitTime(userId, username, newTime) {
-  if (!db) {
-    console.error('Firebase DB not initialized');
-    return;
-  }
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+};
 
+let db; // Declare `db` at a higher scope
+
+window.onload = function() {
+  // Initialize Firebase inside an event that ensures the page has loaded
+  const firebaseConfig = { /* your Firebase config */ };
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database(); // Initialize the `db` here
+
+  console.log(db);
+};
+
+// Submit time function - improved to handle numeric time comparison
+function submitTime(userId, username, newTime) {
   const userRef = db.ref('users/' + userId);
 
   userRef.once('value').then((snapshot) => {
     if (snapshot.exists()) {
       const existingTime = parseFloat(snapshot.val().time);
-      const numericNewTime = parseFloat(newTime); // Use newTime and convert to number for comparison
-
+      const numericNewTime = parseFloat(timeParts); // Use timeParts and convert to number for comparison
+  
       if (numericNewTime < existingTime) {
         // Update to the shorter time
         userRef.update({ 
