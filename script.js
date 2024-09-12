@@ -541,9 +541,12 @@ const ASSETS = {
       tacho.innerText = speed | 0;
   
       let cT = new Date(timestamp() - start);
-      lap.innerText = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT
-        .getMilliseconds()
-        .pad(3)}`;
+      let lapTimeString = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT.getMilliseconds().pad(3)}`;
+      lap.innerText = lapTimeString;
+      
+      // When the game ends and you want to submit the time
+      console.log(`User:${userId} ${username} Lap time: ${lapTimeString}`);
+      window.submitTime(userId, username, lapTimeString);
     }
   
     // sound
