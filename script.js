@@ -542,11 +542,15 @@ const ASSETS = {
   
       let cT = new Date(timestamp() - start);
       let lapTimeString = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT.getMilliseconds().pad(3)}`;
+      
+      // Update the display
       lap.innerText = lapTimeString;
       
       // When the game ends and you want to submit the time
-      console.log(`User:${userId} ${username} Lap time: ${lapTimeString}`);
-      window.submitTime(userId, username, lapTimeString);
+      if (!inGame) {
+        console.log(`User:${userId} ${username} Lap time: ${lapTimeString}`);
+        window.submitTime(userId, username, lapTimeString);
+      }
     }
   
     // sound
