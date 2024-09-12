@@ -1,29 +1,82 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
-
+import { getDatabase, ref, get, update, set } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
 let username = '';
 let userId = '';
 let db; // Declare `db` at a higher scope
 
-window.onload = function() {
-  // Firebase configuration (replace with your own Firebase project credentials)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
-    authDomain: "lotus-8fa6e.firebaseapp.com",
-    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "lotus-8fa6e",
-    storageBucket: "lotus-8fa6e.appspot.com",
-    messagingSenderId: "42734428096",
-    appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
-  };
-  
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app); 
-  console.log(db);
+// Firebase configuration (replace with your own Firebase project credentials)
+const firebaseConfig = {
+  apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+  authDomain: "lotus-8fa6e.firebaseapp.com",
+  databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "lotus-8fa6e",
+  storageBucket: "lotus-8fa6e.appspot.com",
+  messagingSenderId: "42734428096",
+  appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
 };
+
+// Function to initialize Firebase and the database
+function initializeFirebase() {
+  return new Promise((resolve, reject) => {
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app); // Initialize Firebase Database
+      console.log("Firebase initialized successfully");
+      resolve(db);
+    } catch (error) {
+      console.error("Error initializing Firebase:", error);
+      reject(error);
+    }
+  });
+}
+
+// Main initialization function
+function initializeAppLogic() {
+  initializeFirebase()
+    .then((db) => {
+      console.log("Database reference available:", db);
+      // Add any additional app initialization logic here
+    })
+    .catch((error) => {
+      console.error("Failed to initialize Firebase:", error);
+    });
+}
+
+// Use DOMContentLoaded instead of window.onload
+document.addEventListener('DOMContentLoaded', initializeAppLogic);
+
+// Function to convert a time string (0'00"000) to milliseconds
+function timeStringToMilliseconds(timeString) {
+  // Check if the timeString is valid
+  if (!timeString || typeof timeString !== 'string') {
+    console.error('Invalid time string:', timeString);
+    return NaN; // Return NaN to indicate an invalid time string
+  }
+
+  // Modify the regex to support 0'00"000 format
+  const timePattern = /^(\d+)'(\d+)"(\d{3})$/;
+  const match = timeString.match(timePattern);
+
+  if (!match) {
+    console.error('Time string format is incorrect:', timeString);
+    return NaN;
+  }
+
+  const minutes = parseInt(match[1], 10);
+  const seconds = parseInt(match[2], 10);
+  const milliseconds = parseInt(match[3], 10);
+
+  return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+}
+
+
+// Example of using Telegram WebApp API after DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+  const tg = window.Telegram.WebApp;
+  // Initialize Telegram WebApp features here if needed
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -917,7 +970,7 @@ const lapTimeText = lap.innerText;
 const numericNewTime = timeStringToMilliseconds(lapTimeText);
 
 // Firebase reference
-const userRef = firebase.database().ref(`users/${userId}`);
+const userRef = ref(db, `users/${userId}`); // Use `ref` to reference the database path
 
 // Fetch the current value
 get(userRef).then((snapshot) => {
@@ -932,7 +985,7 @@ get(userRef).then((snapshot) => {
     });
 
     // Update the user's record with the new lap
-    userRef.update({ 
+    update(userRef, { 
       username: username, 
       laps: existingTimes 
     }).then(() => {
@@ -953,7 +1006,7 @@ get(userRef).then((snapshot) => {
 
   } else {
     // Create a new record for the user if no data exists
-    userRef.set({
+    set(userRef, {
       username: username,
       laps: [{ 
         time: lapTimeText, 
