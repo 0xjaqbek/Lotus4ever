@@ -1,89 +1,33 @@
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+import { getDatabase, get } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+
+
 let username = '';
 let userId = '';
-// Import Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, ref, get, set, update as firebaseUpdate } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+let db; // Declare `db` at a higher scope
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
-  authDomain: "lotus-8fa6e.firebaseapp.com",
-  databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "lotus-8fa6e",
-  storageBucket: "lotus-8fa6e.appspot.com",
-  messagingSenderId: "42734428096",
-  appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
+window.onload = function() {
+  // Firebase configuration (replace with your own Firebase project credentials)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+    authDomain: "lotus-8fa6e.firebaseapp.com",
+    databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "lotus-8fa6e",
+    storageBucket: "lotus-8fa6e.appspot.com",
+    messagingSenderId: "42734428096",
+    appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
+  };
+  
+  // Initialize Firebase
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the database
+const db = firebase.database();
+  console.log(db);
 };
-
-// Declare db variable globally
-let db;
-
-// Initialize Firebase when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app); // Initialize the Firebase Database after the app is initialized
-  console.log("Firebase initialized and DB reference set.");
-
-  // Now that Firebase is initialized, call your function
-  exampleFunction("testUserId");
-});
-
-// Example function using the Firebase Database
-function exampleFunction(userId) {
-  if (!db) {
-    console.error("Firebase database is not initialized yet.");
-    return;
-  }
-
-  // Reference to user data in Firebase Database
-  const userRef = ref(db, `users/${userId}`);
-
-  // Fetch the current value
-  get(userRef).then((snapshot) => {
-    if (snapshot.exists()) {
-      const userData = snapshot.val();
-      console.log("User data:", userData);
-    } else {
-      console.log("No data available.");
-    }
-  }).catch((error) => {
-    console.error("Error fetching user data:", error);
-  });
-}
-
-
-// Function to convert a time string (0'00"000) to milliseconds
-function timeStringToMilliseconds(timeString) {
-  // Check if the timeString is valid
-  if (!timeString || typeof timeString !== 'string') {
-    console.error('Invalid time string:', timeString);
-    return NaN; // Return NaN to indicate an invalid time string
-  }
-
-  // Modify the regex to support 0'00"000 format
-  const timePattern = /^(\d+)'(\d+)"(\d{3})$/;
-  const match = timeString.match(timePattern);
-
-  if (!match) {
-    console.error('Time string format is incorrect:', timeString);
-    return NaN;
-  }
-
-  const minutes = parseInt(match[1], 10);
-  const seconds = parseInt(match[2], 10);
-  const milliseconds = parseInt(match[3], 10);
-
-  return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
-}
-
-
-// Example of using Telegram WebApp API after DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-  const tg = window.Telegram.WebApp;
-  // Initialize Telegram WebApp features here if needed
-});
-
 
 document.addEventListener('DOMContentLoaded', function() {
   const tg = window.Telegram.WebApp;
@@ -970,60 +914,41 @@ if (!inGame) {
     reset();
 });
 
-// Store the original lap time text
-const lapTimeText = lap.innerText;
-
-// Convert lap time to milliseconds
-const numericNewTime = timeStringToMilliseconds(lapTimeText);
-
-// Fetch the current value
-get(userRef).then((snapshot) => {
-  if (snapshot.exists()) {
-    const userData = snapshot.val();
-    const existingTimes = userData.laps || []; // Get the existing laps array or initialize an empty one
-
-    // Add the new lap time to the array
-    existingTimes.push({
-      time: lapTimeText,          // Store the time in original format
-      numericTime: numericNewTime // Also store the numeric time for comparison
-    });
-
-    // Update the user's record with the new lap using firebaseUpdate alias
-    firebaseUpdate(userRef, { 
-      username: username, 
-      laps: existingTimes 
-    }).then(() => {
-      alert(`Great job ${username}, your lap time has been added!`);
-    });
-
-    // Find the fastest lap time
-    const fastestLap = existingTimes.reduce((fastest, lap) => 
-      lap.numericTime < fastest ? lap.numericTime : fastest, Infinity
-    );
-
-    if (numericNewTime < fastestLap) {
-      alert(`Congratulations ${username}, you've set a new personal best time!`);
-    } else {
-      const diff = numericNewTime - fastestLap;
-      alert(`Your time was slower by ${diff} milliseconds compared to your best time. Try again!`);
-    }
-
-  } else {
-    // Create a new record for the user if no data exists
-    set(userRef, {
-      username: username,
-      laps: [{ 
-        time: lapTimeText, 
-        numericTime: numericNewTime 
-      }]
-    }).then(() => {
-      alert(`Welcome ${username}, your lap time has been recorded!`);
-    });
+function submitTime(userId, username, newTime) {
+  if (!db) {
+    console.error('Firebase DB not initialized');
+    return;
   }
-}).catch((error) => {
-  console.error('Error updating lap times:', error);
-});
 
-// Log the lap times
-console.log(`User: ${userId} ${username} Lap time: ${lapTimeText}`);
-console.log(`Exact User Time (ms): ${numericNewTime}`);
+  const userRef = db.ref('users/' + userId);
+
+  userRef.once('value').then((snapshot) => {
+    if (snapshot.exists()) {
+      const existingTime = parseFloat(snapshot.val().time);
+      const numericNewTime = parseFloat(newTime); // Use newTime and convert to number for comparison
+
+      if (numericNewTime < existingTime) {
+        // Update to the shorter time
+        userRef.update({ 
+          username: username, 
+          time: numericNewTime // Store numericNewTime instead of the string
+        }).then(() => {
+          alert(`Congratulations ${username}, you've set a new best time!`);
+        });
+      } else {
+        const diff = numericNewTime - existingTime;
+        alert(`Your time was slower by ${diff.toFixed(3)} seconds. Try again!`);
+      }
+    } else {
+      // Create a new record for the user
+      userRef.set({
+        username: username,
+        time: numericNewTime // Store numericNewTime instead of the string
+      }).then(() => {
+        alert(`Welcome ${username}, your time has been recorded!`);
+      });
+    }
+  }).catch((error) => {
+    console.error('Error updating time:', error);
+  });
+}
