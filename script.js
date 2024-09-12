@@ -881,20 +881,28 @@ const ASSETS = {
     reset();
 });
 
-// Submit time function - improved to handle numeric time comparison
-function submitTime(userId, username, timeParts) {
-  const userRef = db.ref('users/' + userId);
+window.submitTime = function(userId, username, timeString) {
+  const userRef = ref(db, 'users/' + userId);
 
-  userRef.once('value').then((snapshot) => {
+  // Parse the time string (format: "ss.mmm")
+  const [seconds, milliseconds] = timeString.split('.');
+  if (!seconds || !milliseconds) {
+    console.error('Invalid time format');
+    return;
+  }
+
+  // Convert to a single number (seconds with millisecond precision)
+  const numericNewTime = parseFloat(timeString);
+
+  get(userRef).then((snapshot) => {
     if (snapshot.exists()) {
-      const existingTime = parseFloat(snapshot.val().time);
-      const numericNewTime = parseFloat(timeParts); // Use timeParts and convert to number for comparison
-  
+      const existingTime = snapshot.val().time;
+      
       if (numericNewTime < existingTime) {
         // Update to the shorter time
-        userRef.update({ 
+        set(userRef, { 
           username: username, 
-          time: numericNewTime // Store numericNewTime instead of the string
+          time: numericNewTime
         }).then(() => {
           alert(`Congratulations ${username}, you've set a new best time!`);
         });
@@ -904,9 +912,9 @@ function submitTime(userId, username, timeParts) {
       }
     } else {
       // Create a new record for the user
-      userRef.set({
+      set(userRef, {
         username: username,
-        time: numericNewTime // Store numericNewTime instead of the string
+        time: numericNewTime
       }).then(() => {
         alert(`Welcome ${username}, your time has been recorded!`);
       });
@@ -914,4 +922,4 @@ function submitTime(userId, username, timeParts) {
   }).catch((error) => {
     console.error('Error updating time:', error);
   });
-}
+};
