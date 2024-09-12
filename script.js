@@ -881,6 +881,69 @@ const ASSETS = {
     reset();
 });
 
+// At the top of your script (pen.js)
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+
+// Your Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCHuPCcZBPHaoov-GnN0uX5VPfNHGs8q4g",
+  authDomain: "lotus-8fa6e.firebaseapp.com",
+  databaseURL: "https://lotus-8fa6e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "lotus-8fa6e",
+  storageBucket: "lotus-8fa6e.appspot.com",
+  messagingSenderId: "42734428096",
+  appId: "1:42734428096:web:8e1b839cdcff2e9b737225",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Make Firebase functions available globally
+window.submitTime = function(userId, username, timeString) {
+  const userRef = ref(db, 'users/' + userId);
+
+  // Parse the time string (format: "ss.mmm")
+  const [seconds, milliseconds] = timeString.split('.');
+  if (!seconds || !milliseconds) {
+    console.error('Invalid time format');
+    return;
+  }
+
+  // Convert to a single number (seconds with millisecond precision)
+  const numericNewTime = parseFloat(timeString);
+
+  get(userRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const existingTime = snapshot.val().time;
+      
+      if (numericNewTime < existingTime) {
+        // Update to the shorter time
+        set(userRef, { 
+          username: username, 
+          time: numericNewTime
+        }).then(() => {
+          alert(`Congratulations ${username}, you've set a new best time!`);
+        });
+      } else {
+        const diff = numericNewTime - existingTime;
+        alert(`Your time was slower by ${diff.toFixed(3)} seconds. Try again!`);
+      }
+    } else {
+      // Create a new record for the user
+      set(userRef, {
+        username: username,
+        time: numericNewTime
+      }).then(() => {
+        alert(`Welcome ${username}, your time has been recorded!`);
+      });
+    }
+  }).catch((error) => {
+    console.error('Error updating time:', error);
+  });
+};
+
 window.submitTime = function(userId, username, timeString) {
   const userRef = ref(db, 'users/' + userId);
 
