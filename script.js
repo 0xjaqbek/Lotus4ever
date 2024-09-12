@@ -530,20 +530,29 @@ const ASSETS = {
       updateHighscore();
       console.log(`User:${userId} ${username} Lap time: ${lap.innerText}`);
       // Convert lap time (string) to a numeric value in milliseconds
-      const timeParts = lap.innerText.replace("'", ".").replace('"', ".");
-      console.log(`Exact User Time: ${timeParts}`);
-      // Send the userId, username, and lapTimeInMs to Firebase
-      window.submitTime(userId, username, timeParts);
-      inGame = false;
-    } else {
-      time.innerText = (countDown | 0).pad(3);
-      score.innerText = (scoreVal | 0).pad(8);
-      tacho.innerText = speed | 0;
+    // Parse the time string
+    const [minutes, rest] = lap.innerText.split("'");
+    const [seconds, milliseconds] = rest.split('"');
   
-      let cT = new Date(timestamp() - start);
-      lap.innerText = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT
-        .getMilliseconds()
-        .pad(3)}`;
+    // Convert to total seconds
+    const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds);
+  
+    // Format as "seconds.milliseconds"
+    const timeParts = `${totalSeconds}.${milliseconds}`;
+    
+    console.log(`Exact User Time: ${timeParts}`);
+    // Send the userId, username, and timeParts to Firebase
+    window.submitTime(userId, username, timeParts);
+    inGame = false;
+  } else {
+    time.innerText = (countDown | 0).pad(3);
+    score.innerText = (scoreVal | 0).pad(8);
+    tacho.innerText = speed | 0;  
+
+    let cT = new Date(timestamp() - start);
+    lap.innerText = `${cT.getMinutes()}'${cT.getSeconds().pad(2)}"${cT
+      .getMilliseconds()
+      .pad(3)}`;
     }
   
     // sound
