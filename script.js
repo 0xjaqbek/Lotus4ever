@@ -3,9 +3,6 @@ import { getDatabase, ref, get, update as firebaseUpdate, set } from "https://ww
 
 let username = '';
 let userId = '';
-// Import Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
-import { getDatabase, ref, get, set, update as firebaseUpdate } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
